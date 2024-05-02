@@ -5,9 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detail Podcast</title>
     <style>
-        table {
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+        .card {
             width: 80%;
             margin: 20px auto;
+            padding: 20px;
+            background-color: #f9f9f9; /* Warna broken white */
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        table {
+            width: 100%;
             border-collapse: collapse;
         }
         th, td {
@@ -27,57 +38,60 @@
             margin: 20px auto;
             padding: 10px;
             text-align: center;
-            background-color: #007bff;
+            background-color: #ffcc00; /* Warna kuning neon */
             color: #fff;
             text-decoration: none;
             border: none;
             border-radius: 5px;
+            transition: background-color 0.3s ease; /* Transisi warna */
         }
         .btn-back:hover {
-            background-color: #0056b3;
+            background-color: #ffcc00cc; /* Kode warna kuning neon dengan opacity */
         }
     </style>
 </head>
 <body>
-    <h2>PODCAST DETAIL</h2>
-    <p>Judul: Podcast1</p>
-    <p>Genre(s):
-        <ul>
-            <li>Genre1</li>
-            <li>Genre2</li>
-        </ul>
-    </p>
-    <p>Podcaster: Artist1</p>
-    <p>Total Durasi: 8 jam 20 menit</p>
-    <p>Tanggal Rilis: 18/03/24</p>
-    <p>Tahun: 2024</p>
-    <a href="#" class="btn-back">Kembali</a>
-    <h2>DAFTAR EPISODE</h2>
-    <table>
-        <tr>
-            <th>Judul Episode</th>
-            <th>Deskripsi</th>
-            <th>Durasi</th>
-            <th>Tanggal</th>
-        </tr>
-        <tr>
-            <td>Judul Episode 1</td>
-            <td>Deskripsi Episode 1</td>
-            <td>2 jam 10 menit</td>
-            <td>01/04/24</td>
-        </tr>
-        <tr>
-            <td>Judul Episode 2</td>
-            <td>Deskripsi Episode 2</td>
-            <td>3 jam 15 menit</td>
-            <td>08/04/24</td>
-        </tr>
-        <tr>
-            <td>Judul Episode 3</td>
-            <td>Deskripsi Episode 3</td>
-            <td>3 jam 55 menit</td>
-            <td>15/04/24</td>
-        </tr>
-    </table>
+    <div class="card">
+        <h2>PODCAST DETAIL</h2>
+        <p><strong>Judul:</strong> Podcast1</p>
+        <p><strong>Genre(s):</strong>
+            <ul>
+                <li>Genre1</li>
+                <li>Genre2</li>
+            </ul>
+        </p>
+        <p><strong>Podcaster:</strong> Artist1</p>
+        <p><strong>Total Durasi:</strong> 8 jam 20 menit</p>
+        <p><strong>Tanggal Rilis:</strong> 18/03/24</p>
+        <p><strong>Tahun:</strong> 2024</p>
+        <a href="#" class="btn-back">Kembali</a>
+        <h2>DAFTAR EPISODE</h2>
+        <table>
+            <tr>
+                <th>Judul Episode</th>
+                <th>Deskripsi</th>
+                <th>Durasi</th>
+                <th>Tanggal</th>
+            </tr>
+            <tr>
+                <td>Judul Episode 1</td>
+                <td>Deskripsi Episode 1</td>
+                <td>2 jam 10 menit</td>
+                <td>01/04/24</td>
+            </tr>
+            <tr>
+                <td>Judul Episode 2</td>
+                <td>Deskripsi Episode 2</td>
+                <td>3 jam 15 menit</td>
+                <td>08/04/24</td>
+            </tr>
+            <tr>
+                <td>Judul Episode 3</td>
+                <td>Deskripsi Episode 3</td>
+                <td>3 jam 55 menit</td>
+                <td>15/04/24</td>
+            </tr>
+        </table>
+    </div>
 </body>
 </html>
