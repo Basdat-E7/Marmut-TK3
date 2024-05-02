@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Lagu pada Album</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+        }
+        table {
+            width: 80%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: #FFCC00;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            text-align: left;
+            padding: 8px;
+        }
+        th {
+            background-color: yellow;
+        }
+        button {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+        .btn-detail {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .btn-delete {
+            background-color: #f44336;
+            color: white;
+        }
+        select {
+            padding: 8px;
+            margin-bottom: 20px;
+            width: 200px;  /* Adjust width as needed */
+        }
+    </style>
+</head>
+<body>
+    <h1>Daftar Lagu</h1>
+    <form>
+        <label for="album-select">Pilih Album:</label>
+        <select id="album-select" onchange="updateAlbumSelection()">
+            <option value="album1">Album1</option>
+            <option value="album2">Album2</option>
+            <option value="album3">Album3</option>
+        </select>
+    </form>
+    <table>
+        <thead>
+            <tr>
+                <th>Judul</th>
+                <th>Durasi</th>
+                <th>Total Play</th>
+                <th>Total Download</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Song One</td>
+                <td>3:45</td>
+                <td>1,200 plays</td>
+                <td>800 downloads</td>
+                <td>
+                    <button class="btn-detail" onclick="location.href='detail_lagu.html'">Lihat Detail</button>
+                    <button class="btn-delete">Hapus</button>
+                </td>
+            </tr>
+            <tr>
+                <td>Song Two</td>
+                <td>4:20</td>
+                <td>1,500 plays</td>
+                <td>1,100 downloads</td>
+                <td>
+                    <button class="btn-detail" onclick="location.href='detail_lagu.html'">Lihat Detail</button>
+                    <button class="btn-delete">Hapus</button>
+                </td>
+            </tr>
+            <tr>
+                <td>Song Three</td>
+                <td>5:00</td>
+                <td>500 plays</td>
+                <td>300 downloads</td>
+                <td>
+                    <button class="btn-detail" onclick="location.href='detail_lagu.html'">Lihat Detail</button>
+                    <button class="btn-delete">Hapus</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <script>
+        function updateAlbumSelection() {
+            var albumId = document.getElementById('album-select').value;
+            // Place logic here to load songs from the selected album
+            // This might involve redirecting to another page or making an AJAX call
+            console.log("Selected album:", albumId);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Lagu</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh; 
+            margin: 0;
+        }
+        form {
+            width: 300px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            padding: 20px;
+            background: #FFCC00;
+            border-radius: 8px;
+        }
+ 
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        label, select, input, button {
+            width: 100%;
+            margin-top: 10px;
+            padding: 8px;
+        }
+        select[multiple] {
+            height: auto;
+            min-height: 80px;
+        }
+        button {
+            background-color: yellow;
+            color: black;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: rgba(255, 255, 0, 0.591);
+        }
+    </style>
+</head>
+<body>
+    <form action="/create_lagu_artist" method="post">
+        <h1>Create Lagu</h1>
+        <h4>Artist: Lala</h4>
+        <div>
+            <label for="album">Album:</label>
+            <input type="text" id="album" name="album" value="Album1" disabled>
+        </div>
+        <div>
+            <label for="title">Judul:</label>
+            <input type="text" id="title" name="title" required>
+        </div>
+        <div>
+            <label>Artist:</label>
+            <input type="text" value="Lala (You)" disabled>
+        </div>
+        <div>
+            <label for="songwriter">Songwriter:</label>
+            <select id="songwriter" name="songwriter[]" multiple required>
+                <option value="songwriter1">Songwriter 1</option>
+                <option value="songwriter2">Songwriter 2</option>
+                <option value="songwriter3">Songwriter 3</option>
+            </select>
+        </div>
+        <div>
+            <label for="genre">Genre:</label>
+            <select id="genre" name="genre[]" multiple required>
+                <option value="pop">Pop</option>
+                <option value="rock">Rock</option>
+                <option value="jazz">Jazz</option>
+                <option value="classical">Classical</option>
+                <option value="hip-hop">Hip-Hop</option>
+            </select>
+        </div>
+        <div>
+            <label for="duration">Durasi:</label>
+            <input type="text" id="duration" name="duration" required>
+        </div>
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>
