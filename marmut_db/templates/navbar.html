@@ -1,0 +1,96 @@
+<nav>
+    <ul class="navbar">
+        <li><a href="">Dashboard</a></li>
+        
+        {% if user.is_authenticated %}
+            {% if user.roles in 'Pengguna_biasa, Artist, Songwriter, Podcaster' %} 
+            <li><a href="">Chart</a></li>
+            <li><a href="">Search Bar</a></li>
+            <li><a href="">Kelola Playlist</a></li>
+            <li><a href="">Langganan Paket</a></li>
+            {% endif %}
+        
+            {% if user.premium_status == 'Premium' %}
+            <li><a href="">Downloaded Songs</a></li>
+            {% endif %}
+
+            {% if user.roles == 'Podcaster' %}
+            <li><a href="">Kelola Podcast</a></li>
+            {% endif %}
+        
+            {% if user.roles in 'Artist, Songwriter' %}
+            <li><a href="">Kelola Album & Songs</a></li>
+            {% endif %}
+        
+            {% if user.roles == 'Label' %}
+            <li><a href="">Kelola Album</a></li>
+            {% endif %}
+       
+            {% if user.roles in 'Artist, Songwriter, Label' %}
+            <li><a href="">Cek Royalti</a></li>
+            {% endif %}
+        
+        <li><a href="">Logout</a></li>
+        
+        {% else %}        
+        <ul class="navbar-right">
+            <li><a href="{% url 'marmut_db:login' %}">Login</a></li>
+            <li><a href="{% url 'marmut_db:register' %}">Register</a></li>
+        </ul>
+        {% endif %}
+       
+    </ul>
+</nav>
+
+<style>
+    /* Your existing CSS styles */
+    body {
+    margin: 0;
+    padding: 0;
+}
+
+
+    nav ul.navbar {
+        list-style-type: none;
+        padding: 0;
+        display: flex;
+        justify-content: space-between;
+        align-content: center;
+        background-color: yellow;
+    }
+
+    nav ul.navbar li {
+        margin-right: 20px;
+    }
+
+    nav ul.navbar li:last-child {
+        margin-right: 0;
+    }
+
+    nav ul.navbar li a {
+        text-decoration: none;
+        color: black;
+        font-weight: bold;
+        font-size: 25;
+    }
+
+    .navbar-right {
+    list-style-type: none;
+    padding: 0;
+    display: flex; /* Arranges items in a row */
+}
+
+.navbar-right li {
+    margin-right: 20px;
+}
+
+.navbar-right li:last-child {
+    margin-right: 0;
+}
+
+.navbar-right li a {
+    text-decoration: none;
+    color: black;
+    font-weight: bold;
+}
+</style>
