@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Playlist</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: rgb(230, 230, 79); 
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333; 
+        }
+        .playlist-info {
+            margin-bottom: 20px;
+        }
+        .playlist-info label {
+            font-weight: bold;
+            color: #333;
+        }
+        .playlist-info p {
+            color: #555; 
+        }
+        .song-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .song-table th, .song-table td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+        .song-table th {
+            background-color: #f2f2f2;
+        }
+        .song-table tr:hover {
+            background-color: #f9f9f9;
+        }
+        .song-table .actions {
+            text-align: center;
+        }
+        .song-table .actions button {
+            padding: 5px 10px;
+            background-color: #4CAF50; 
+            color: white; 
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .song-table .actions button:hover {
+            background-color: #45a049; 
+        }
+        .add-song-button {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .add-song-button button {
+            padding: 10px 20px;
+            background-color: #4CAF50; 
+            color: white; 
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .add-song-button button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Detail Playlist</h1>
+        <div class="playlist-info">
+            <label>Judul Playlist:</label>
+            <p>Magic Kingdom</p>
+            <label>Pembuat Playlist:</label>
+            <p>Imroatus</p>
+            <label>Jumlah Lagu:</label>
+            <p>5</p>
+            <label>Total Durasi:</label>
+            <p>16 menit</p>
+            <label>Tanggal Dibuat:</label>
+            <p>9 April 2024</p>
+            <label>Deskripsi Playlist:</label>
+            <p>“you have sustained no injuries. however, your hormone and neurotransmitter levels indicate that you are experiencing mood swings, common in adolescence”</p>
+        </div>
+        <h2>Daftar Lagu</h2>
+        <table class="song-table">
+            <thead>
+                <tr>
+                    <th>Judul Lagu</th>
+                    <th>Artis</th>
+                    <th>Durasi</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Lagu 1</td>
+                    <td>Penyanyi 1</td>
+                    <td>3:30</td>
+                    <td class="actions">
+                        <a href="{% url 'kelola_playlist:play_song' %}", style="text-decoration: none">
+                            <button>Lihat</button>
+                        </a>
+                        <button>Play</button>
+                        <button>Hapus</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Lagu 2</td>
+                    <td>Penyanyi 2</td>
+                    <td>3:30</td>
+                    <td class="actions">
+                        <button>Lihat</button>
+                        <button>Play</button>
+                        <button>Hapus</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Lagu 3</td>
+                    <td>Penyanyi 3</td>
+                    <td>3:00</td>
+                    <td class="actions">
+                        <button>Lihat</button>
+                        <button>Play</button>
+                        <button>Hapus</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Lagu 4</td>
+                    <td>Penyanyi 4</td>
+                    <td>3:00</td>
+                    <td class="actions">
+                        <button>Lihat</button>
+                        <button>Play</button>
+                        <button>Hapus</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Lagu 5</td>
+                    <td>Penyanyi 5</td>
+                    <td>3:00</td>
+                    <td class="actions">
+                        <button>Lihat</button>
+                        <button>Play</button>
+                        <button>Hapus</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="add-song-button">
+            <a href="{% url 'kelola_playlist:tambah_lagu' %}", style="text-decoration: none">
+                <button>Tambah Lagu</button>
+            </a>
+            <button>Shuffle Play</button>
+            <button>Kembali</button>
+        </div>
+    </div>
+</body>
+</html>
