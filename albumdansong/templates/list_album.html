@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List Album</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #FFCC00;
+        }
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+        th {
+            background-color: yellow;
+        }
+        button {
+            padding: 5px 10px;
+            margin-right: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn-view {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .btn-add {
+            background-color: #008CBA;
+            color: white;
+        }
+        .btn-delete {
+            background-color: #f44336;
+            color: white;
+        }
+        .container {
+            width: 100%;
+            max-width: 1000px; 
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>List Album</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Judul</th>
+                    <th>Label</th>
+                    <th>Jumlah Lagu</th>
+                    <th>Total Durasi</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Album A</td>
+                    <td>Sun Records</td>
+                    <td>10</td>
+                    <td>42 mins</td>
+                    <td>
+                        <button class="btn-view">Lihat Daftar Lagu</button>
+                        <button class="btn-add">Tambah Lagu</button>
+                        <button class="btn-delete">Hapus</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Album B</td>
+                    <td>Moon Records</td>
+                    <td>8</td>
+                    <td>35 mins</td>
+                    <td>
+                        <button class="btn-view">Lihat Daftar Lagu</button>
+                        <button class="btn-add">Tambah Lagu</button>
+                        <button class="btn-delete">Hapus</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Album C</td>
+                    <td>Mars Music</td>
+                    <td>12</td>
+                    <td>48 mins</td>
+                    <td>
+                        <button class="btn-view">Lihat Daftar Lagu</button>
+                        <button class="btn-add">Tambah Lagu</button>
+                        <button class="btn-delete">Hapus</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

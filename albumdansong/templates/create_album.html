@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Album</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif; 
+            background-color: white; 
+            color: #333; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        form {
+            background: #FFCC00;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px; 
+        }
+        div {
+            margin-bottom: 20px; 
+        }
+        label {
+            display: block;
+            margin-bottom: 8px; 
+        }
+        input, select {
+            width: 100%; 
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: yellow; 
+            color: black;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover {
+            background-color: rgba(255, 255, 0, 0.591); 
+        }
+    </style>
+</head>
+<body>
+    <form method="post" action="/create_album">
+         <h1 style="text-align: center;">Create Album</h1>
+        <div>
+            <label for="title">Judul:</label>
+            <input type="text" id="title" name="title" required>
+        </div>
+        <div>
+            <label for="label-name">Label:</label>
+            <select id="label-name" name="label-name" required>
+                <option value="">Pilih Label</option>
+                <option value="1">Sun Records</option>
+                <option value="2">Moon Records</option>
+                <option value="3">Mars Music Indonesia</option>
+                <option value="4">Earth Production</option>
+                <option value="5">Venus Studios</option>
+            </select>
+        </div>
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>
