@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pembayaran Paket</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center my-4">PEMBAYARAN PAKET</h1>
+        <h3>Informasi Paket yang Ingin Dibeli:</h3>
+        <table class="table table-bordered">
+            <thead class="thead-light">
+                <tr>
+                    <th>Jenis</th>
+                    <th>Harga</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1 Bulan</td>
+                    <td>Rp49.900</td>
+                </tr>
+            </tbody>
+        </table>
+        <form>
+            <div class="form-group">
+                <label for="paymentMethod">Metode Pembayaran:</label>
+                <select class="form-control" id="paymentMethod">
+                    <option>Transfer Bank</option>
+                    <option>Kartu Kredit</option>
+                    <option>E-Wallet</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">SUBMIT</button>
+        </form>
+    </div>
+    <!-- Bootstrap JS and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>

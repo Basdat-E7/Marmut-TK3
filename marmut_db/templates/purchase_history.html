@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Riwayat Transaksi Paket</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center my-4">RIWAYAT TRANSAKSI PAKET</h1>
+        <table class="table table-bordered">
+            <thead class="thead-light">
+                <tr>
+                    <th>Jenis</th>
+                    <th>Tanggal Dimulai</th>
+                    <th>Tanggal Berakhir</th>
+                    <th>Metode Pembayaran</th>
+                    <th>Nominal</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1 Bulan</td>
+                    <td>8 April 2024, 23:00</td>
+                    <td>8 Mei 2024, 23:00</td>
+                    <td>E-Wallet</td>
+                    <td>Rp49.900</td>
+                </tr>
+                <!-- Add more rows as needed -->
+            </tbody>
+        </table>
+        <a href="{% url 'marmut_db:show_main' %}" class="btn btn-primary">Kembali</a>
+    </div>
+    <!-- Bootstrap JS and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>
