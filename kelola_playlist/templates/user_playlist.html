@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Playlist</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            border-bottom: 1px solid rgb(230, 230, 79);
+            text-align: left;
+        }
+        th {
+            background-color: rgb(230, 230, 79);
+        }
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+        .action {
+            text-align: center;
+        }
+        .action button {
+            padding: 5px 10px;
+        }
+        .add-button {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .add-button button {
+            padding: 10px 20px;
+        }
+        .add-button button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>User Playlist</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Judul Playlist</th>
+                    <th>Jumlah Lagu</th>
+                    <th>Total Durasi</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Magic Kingdom</td>
+                    <td>5</td>
+                    <td>16 menit</td>
+                    <td class="action">
+                        <a href="{% url 'kelola_playlist:playlist_detail' %}", style="text-decoration: none">
+                            <button type="submit">Detail</button>
+                        </a>
+                        <button>Edit</button>
+                        <button>Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="add-button">
+            <a href="{% url 'kelola_playlist:tambah_playlist' %}">
+                <button type="submit">Tambah Playlist</button>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

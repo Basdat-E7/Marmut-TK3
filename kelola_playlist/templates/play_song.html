@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Lagu</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: rgb(230, 230, 79);
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+        }
+        form {
+            margin-top: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="range"] {
+            width: 100%;
+            margin-top: 20px;
+            margin-bottom: 30px;
+        }
+        button {
+            padding: 10px 20px;
+            margin-right: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            text-align: center;
+        }
+        .modal-content p {
+            margin-bottom: 20px;
+        }
+        .modal-button-container {
+            text-align: center;
+        }
+        .modal-button-container button {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Detail Lagu</h1>
+        <form id="songDetailForm">
+            <label><strong> Lagu:</strong></label>
+            <p>Lagu 1</p>
+            <label><strong>Genre Lagu:</strong></label>
+            <p>Pop</p>
+            <label><strong>Artist:</strong></label>
+            <p>Penyanyi 1</p>
+            <label><strong>Songwriter:</strong></label>
+            <p>Pencipta 1</p>
+            <label><strong>Durasi:</strong></label>
+            <p>5:00</p>
+            <label><strong>Tanggal Rilis:</strong></label>
+            <p>1 Januari 2024</p>
+            <label><strong>Tahun:</strong></label>
+            <p>2024</p>
+            <label><strong>Total Play:</strong></label>
+            <p>1000</p>
+            <label><strong>Total Download:</strong></label>
+            <p>500</p>
+            <label><strong>Album:</strong></label>
+            <p>Album 1</p>
+            <input type="range" id="progress" name="progress" min="0" max="100" value="50">
+            <div style="text-align: center;">
+                <button type="button">Play</button>
+                <a href="{% url 'kelola_playlist:add_song_to_user_playlist' %}", style="text-decoration: none">
+                    <button type="button">Add to Playlist</button>
+                </a>
+                <button type="button" id="downloadButton">Download</button>
+                <button type="button">Kembali</button>
+            </div>
+        </form>
+    </div>
+
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <p>Lagu berhasil diunduh!</p>
+            <div class="modal-button-container">
+                <button id="toDownloadListButton">Ke Daftar Download</button>
+                <button id="closeButton">Kembali</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var modal = document.getElementById("myModal");
+
+        var downloadButton = document.getElementById("downloadButton");
+
+        var closeButton = document.getElementById("closeButton");
+
+        var toDownloadListButton = document.getElementById("toDownloadListButton");
+
+        downloadButton.onclick = function() {
+            modal.style.display = "block";
+        }
+
+        closeButton.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        toDownloadListButton.onclick = function() {
+            window.location.replace("download_list.html");
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>
