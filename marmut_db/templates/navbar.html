@@ -1,36 +1,36 @@
 <nav>
     <ul class="navbar">
-        <li><a href="">Dashboard</a></li>
+        <li><a href="{% url 'marmut_db:show_main' %}">Dashboard</a></li>
         
-        {% if user.is_authenticated %}
-            {% if user.roles in 'Pengguna_biasa, Artist, Songwriter, Podcaster' %} 
+        {% if request.session.username %}
+            {% if 'Artist' in request.session.roles or 'Songwriter' in request.session.roles or 'Podcaster' in request.session.roles or 'Akun' in request.session.roles %}
             <li><a href="">Chart</a></li>
             <li><a href="">Search Bar</a></li>
             <li><a href="">Kelola Playlist</a></li>
             <li><a href="">Langganan Paket</a></li>
             {% endif %}
         
-            {% if user.premium_status == 'Premium' %}
+            {% if request.session.premium_status == 'Premium' %}
             <li><a href="">Downloaded Songs</a></li>
             {% endif %}
 
-            {% if user.roles == 'Podcaster' %}
+            {% if 'Podcaster' in request.session.roles %}
             <li><a href="">Kelola Podcast</a></li>
             {% endif %}
         
-            {% if user.roles in 'Artist, Songwriter' %}
+            {% if 'Artist' in request.session.roles or 'Songwriter' in request.session.roles %}
             <li><a href="">Kelola Album & Songs</a></li>
             {% endif %}
         
-            {% if user.roles == 'Label' %}
+            {% if 'Label' in request.session.roles %}
             <li><a href="">Kelola Album</a></li>
             {% endif %}
        
-            {% if user.roles in 'Artist, Songwriter, Label' %}
+            {% if 'Artist' in request.session.roles or 'Songwriter' in request.session.roles or 'Label' in request.session.roles %}
             <li><a href="">Cek Royalti</a></li>
             {% endif %}
         
-        <li><a href="">Logout</a></li>
+        <li><a href="{% url 'marmut_db:logout' %}">Logout</a></li>
         
         {% else %}        
         <ul class="navbar-right">
