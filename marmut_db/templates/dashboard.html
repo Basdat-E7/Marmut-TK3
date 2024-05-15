@@ -145,7 +145,7 @@
         {% if 'Podcaster' in request.session.roles %}
         <div class="col-md-3">
             <h2>Podcast</h2>
-            <p>Belum Memiliki podcast</p>
+            <p>{{request.session.podcasts}}</p>
         </div>
         {% endif %}
         {% if 'Label' in request.session.roles %}
