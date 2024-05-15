@@ -84,29 +84,33 @@
     }
 
     .playlist-card {
-        position: absolute;
-        top: 90;
-        left: 0;
         background-color: rgb(230, 230, 79);
         border-radius: 15px;
         border-color: black;
         box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.1);
         padding: 20px;
-        margin: 20px; /* adjust as needed */
-        width: 300px; /* adjust as needed */
+        margin: 20px auto; /* Adjusted to center horizontally */
+        max-width: 300px; /* Adjusted to fit within the column */
     }
 
     .podcast-card {
-        position: absolute;
-        top: 300;
-        left: 0;
         background-color: rgb(230, 230, 79);
         border-radius: 15px;
         border-color: black;
         box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.1);
         padding: 20px;
-        margin: 20px; /* adjust as needed */
-        width: 300px; /* adjust as needed */
+        margin: 20px auto; /* Adjusted to center horizontally */
+        max-width: 300px; /* Adjusted to fit within the column */
+    }
+
+    .song-card {
+        background-color: rgb(230, 230, 79);
+        border-radius: 15px;
+        border-color: black;
+        box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        margin: 20px auto; /* Adjusted to center horizontally */
+        max-width: 300px; /* Adjusted to fit within the column */
     }
     </style>
 </head>
@@ -116,78 +120,97 @@
 
 {% block content %}
     {% load static %}
-    <h1 class ="welcome-label">Welcome to Marmut Dashboard</h1>
+    <h1 class="welcome-label">Welcome to Marmut Dashboard</h1>
 
     {% if request.session.username %}
     <div class="container">
         <form class="form-inline my-2 my-lg-0 d-flex justify-content-center mt-3">
             <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-            <a href ="{% url 'marmut_db:search' %}" class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</a>
+            <a href="{% url 'marmut_db:search' %}" class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</a>
         </form>
     </div>
-
-    <div class="guest-notif"></div>
-    <div class = "center-image">
-        <img class = "welcome-img" src = "{% static 'images/marmut_hello.png' %}" alt="Marmut Logo">
+    <div class="row">
+        {% if 'Akun' in request.session.roles %}
+        <div class="col-md-3">
+                <h2>Playlist</h2>
+                <p>Belum Memiliki Playlist</p>
+        </div>
+        {% endif %}
+        {% if 'Artist' in request.session.roles or 'Songwriter' in request.session.roles %}
+        <div class="col-md-3">
+                <h2>Songs</h2>
+                <p>{{request.session.songs}}</p>
+        </div>
+        {% endif %}
+        {% if 'Podcaster' in request.session.roles %}
+        <div class="col-md-3">
+            <h2>Podcast</h2>
+            <p>Belum Memiliki podcast</p>
+        </div>
+        {% endif %}
+        {% if 'Label' in request.session.roles %}
+        <div class="col-md-3">
+            <h2>Album</h2>
+            <p>Belum Memiliki album</p>
+        </div>
+        {% endif %}
     </div>
-    <div class="user-card">
-        <div class="user-info">
-            {% if request.session.username %}
-            <div class="info-row">
-                <div class="info-label">Name:</div>
-                <div class="info-value">{{ request.session.name }}</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Email:</div>
-                <div class="info-value">{{ request.session.email }}</div>
-            </div>
-            {% endif %}
-            {% if 'Label' in request.session.roles %}
-            <div class="info-row">
-                <div class="info-label">Kontak:</div>
-                <div class="info-value">{{ request.session.contact }}</div>
-            </div>
-            {% elif 'Akun' in request.session.roles %}
-            {% if 'Artist' in request.session.roles or 'Songwriter' in request.session.roles or 'Podcaster' in request.session.roles %}
-            <div class="info-row">
-                <div class="info-label">Role:</div>
-                <div class="info-value">{% for role in request.session.roles %}
-                    {% if role != 'Akun' %}
-                        {{ role }}
-                        {% if not forloop.last and not forloop.first %}, {% endif %}
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="user-card">
+                <!-- Isi dari user-card -->
+                <div class="user-info">
+                    {% if request.session.username %}
+                    <div class="info-row">
+                        <div class="info-label">Name:</div>
+                        <div class="info-value">{{ request.session.name }}</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Email:</div>
+                        <div class="info-value">{{ request.session.email }}</div>
+                    </div>
                     {% endif %}
-                {% endfor %}</div>
+                    {% if 'Label' in request.session.roles %}
+                    <div class="info-row">
+                        <div class="info-label">Kontak:</div>
+                        <div class="info-value">{{ request.session.contact }}</div>
+                    </div>
+                    {% elif 'Akun' in request.session.roles %}
+                        {% if 'Artist' in request.session.roles or 'Songwriter' in request.session.roles or 'Podcaster' in request.session.roles %}
+                        <div class="info-row">
+                            <div class="info-label">Role:</div>
+                            <div class="info-value">{% for role in request.session.roles %}
+                                {% if role != 'Akun' %}
+                                    {{ role }}
+                                    {% if not forloop.last and not forloop.first %}, {% endif %}
+                                {% endif %}
+                            {% endfor %}</div>
+                        </div>
+                        {% endif %}
+                    <div class="info-row">
+                        <div class="info-label">Kota Asal:</div>
+                        <div class="info-value">{{ request.session.city }}</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Gender:</div>
+                        <div class="info-value">{{ request.session.gender }}</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Tempat Lahir:</div>
+                        <div class="info-value">{{ request.session.birthplace }}</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Tanggal Lahir:</div>
+                        <div class="info-value">{{ request.session.birthdate }}</div>
+                    </div>
+                    {% endif %}
+                </div>    
             </div>
-            {% endif %}
-            <div class="info-row">
-                <div class="info-label">Kota Asal:</div>
-                <div class="info-value">{{ request.session.city }}</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Gender:</div>
-                <div class="info-value">{{ request.session.gender }}</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Tempat Lahir:</div>
-                <div class="info-value">{{ request.session.birthplace }}</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Tanggal Lahir:</div>
-                <div class="info-value">{{ request.session.birthdate }}</div>
-            </div>
-            {% endif %}
         </div>
     </div>
 
-    <div class="playlist-card">
-        <h2>Playlist</h2>
-        <p>Belum Memiliki Playlist</p>
-    </div>
+    
 
-    <div class="podcast-card">
-        <h2>Songs</h2>
-        <p>Belum Memiliki lagu</p>
-    </div>
    {% else %}
     <div class="warning-card">
         <img class="warning-image" src="{% static 'images/eror_marmut.png' %}" alt="Warning Image">
@@ -199,6 +222,7 @@
     {% endif %}
    
 {% endblock %}
+
 
 {% block css %}
 <style>
