@@ -118,6 +118,7 @@
     {% load static %}
     <h1 class ="welcome-label">Welcome to Marmut Dashboard</h1>
 
+    {% if request.session.username %}
     <div class="container">
         <form class="form-inline my-2 my-lg-0 d-flex justify-content-center mt-3">
             <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
@@ -131,38 +132,50 @@
     </div>
     <div class="user-card">
         <div class="user-info">
+            {% if request.session.username %}
             <div class="info-row">
                 <div class="info-label">Name:</div>
-                <div class="info-value">Stella Lee</div>
+                <div class="info-value">{{ request.session.name }}</div>
             </div>
             <div class="info-row">
                 <div class="info-label">Email:</div>
-                <div class="info-value">sparklingstar@yahoo.com</div>
+                <div class="info-value">{{ request.session.email }}</div>
             </div>
+            {% endif %}
+            {% if 'Label' in request.session.roles %}
+            <div class="info-row">
+                <div class="info-label">Kontak:</div>
+                <div class="info-value">{{ request.session.contact }}</div>
+            </div>
+            {% elif 'Akun' in request.session.roles %}
+            {% if 'Artist' in request.session.roles or 'Songwriter' in request.session.roles or 'Podcaster' in request.session.roles %}
             <div class="info-row">
                 <div class="info-label">Role:</div>
-                <div class="info-value">Artist</div>
+                <div class="info-value">{% for role in request.session.roles %}
+                    {% if role != 'Akun' %}
+                        {{ role }}
+                        {% if not forloop.last and not forloop.first %}, {% endif %}
+                    {% endif %}
+                {% endfor %}</div>
             </div>
-            <!-- <div class="info-row">
-                <div class="info-label">Kontak:</div>
-                <div class="info-value">(+62)82253879023</div>
-            </div> -->
+            {% endif %}
             <div class="info-row">
                 <div class="info-label">Kota Asal:</div>
-                <div class="info-value">Jakarta</div>
+                <div class="info-value">{{ request.session.city }}</div>
             </div>
             <div class="info-row">
                 <div class="info-label">Gender:</div>
-                <div class="info-value">Perempuan</div>
+                <div class="info-value">{{ request.session.gender }}</div>
             </div>
             <div class="info-row">
                 <div class="info-label">Tempat Lahir:</div>
-                <div class="info-value">Jakarta</div>
+                <div class="info-value">{{ request.session.birthplace }}</div>
             </div>
             <div class="info-row">
                 <div class="info-label">Tanggal Lahir:</div>
-                <div class="info-value">2002-03-09</div>
+                <div class="info-value">{{ request.session.birthdate }}</div>
             </div>
+            {% endif %}
         </div>
     </div>
 
@@ -175,14 +188,15 @@
         <h2>Songs</h2>
         <p>Belum Memiliki lagu</p>
     </div>
-   
-    <!-- <div class="warning-card">
+   {% else %}
+    <div class="warning-card">
         <img class="warning-image" src="{% static 'images/eror_marmut.png' %}" alt="Warning Image">
         <div class="warning-symbol">⚠️</div>
         <div class="warning-message">
             Hmmmm, it looks like you haven't logged in yet, please login first or register if it's your first time using Marmut.
         </div>
-    </div> -->
+    </div>
+    {% endif %}
    
 {% endblock %}
 

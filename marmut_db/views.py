@@ -3,8 +3,11 @@ from django.db.models import Q
 import psycopg2
 from Marmut_TK3 import settings
 from .models import Song, Podcast, UserPlaylist, Akun, Label
-from .forms import UserRegistrationForm, LabelRegistrationForm
+from .forms import UserRegistrationForm, LabelRegistrationForm, LoginForm
 from itertools import chain
+from django.contrib.auth import authenticate, login as auth_login
+from django.contrib.auth.decorators import login_required
+from datetime import datetime
 
 def get_db_connection():
     conn = psycopg2.connect(
@@ -22,20 +25,156 @@ def show_main(request):
     return render(request, "dashboard.html")
 
 def login(request):
+    if request.method == 'POST':
+        # Ambil data yang di-submit dari form
+        username = request.POST.get('username')
+        password = request.POST.get('password')
 
-    return render(request, "login.html")
+        # Coba melakukan autentikasi menggunakan username (email) dan password
+        user, is_premium, roles = authenticate_akun(username, password)
+
+        # Jika autentikasi berhasil, loginkan user dan redirect ke halaman utama
+        if user is not None:
+            request.session['username'] = username
+            request.session['premium_status'] = 'Premium' if is_premium else 'Free'
+            request.session['roles'] = roles
+
+            if 'Label' in roles:
+                request.session['name'] = user[1]
+                request.session['email'] = user[2]
+                request.session['contact'] = user[4]
+            elif 'Akun' in roles:
+                request.session['name'] = user[2]
+                request.session['email'] = user[0]
+                request.session['birthplace'] = user[4]
+                birthdate_string = user[5].strftime("%d-%m-%Y")
+                request.session['birthdate'] = birthdate_string
+                request.session['city'] = user[7]
+                if user[3] == 0:
+                    request.session['gender'] = "Perempuan"
+                else:
+                    request.session['gender'] = "Laki-laki"
+            return redirect('marmut_db:show_main')
+        else:
+            # Jika autentikasi gagal, tampilkan pesan error
+            error_message = 'Invalid username or password'
+            print(error_message)
+            return render(request, 'login.html', {'error_message': error_message})
+    else:
+        return render(request, 'login.html')
+
+def authenticate_akun(username, password):
+    conn = psycopg2.connect(
+        dbname=settings.DATABASES['default']['NAME'],
+        user=settings.DATABASES['default']['USER'],
+        password=settings.DATABASES['default']['PASSWORD'],
+        host=settings.DATABASES['default']['HOST'],
+        port=settings.DATABASES['default']['PORT']
+    )
+
+    try:
+        # Buat cursor untuk melakukan query
+        cur = conn.cursor()
+        
+        # Cek di tabel akun
+        cur.execute("SELECT * FROM marmut.akun WHERE email = %s", (username,))
+        akun = cur.fetchone()
+        
+        # print(f"Result from 'akun' table: {akun}")
+        # Cek di tabel label jika tidak ditemukan di tabel akun
+        if not akun:
+            print("User not found in 'akun', checking 'label' table")
+            cur.execute("SELECT * FROM marmut.label WHERE email = %s", (username,))
+            label = cur.fetchone()
+            # print(f"Result from 'label' table: {label}")
+            if label and label[3] == password:
+                user = label
+                role = 'Label'
+            else:
+                user = None
+                role = None
+        else:
+            if akun[1] == password:
+                user = akun
+                role = 'Akun'
+            else:
+                user = None
+                role = None
+
+        if user:
+            # Cek status premium
+            cur.execute("SELECT * FROM marmut.premium WHERE email = %s", (username,))
+            premium_status = cur.fetchone()
+
+            # Cek apakah pengguna memiliki langganan premium yang berakhir
+            if premium_status:
+                premium_id = premium_status[0]
+                # Periksa apakah langganan premium telah berakhir
+                cur.execute("SELECT * FROM marmut.transaction WHERE email = %s AND timestamp_berakhir < CURRENT_DATE", (username,))
+                expired_premium = cur.fetchone()
+                print(expired_premium)
+                if expired_premium:
+                    # Jika langganan premium telah berakhir, hapus dari tabel premium
+                    cur.execute("DELETE FROM marmut.downloaded_song WHERE email_downloader = %s", (premium_id,))
+                    cur.execute("DELETE FROM marmut.premium WHERE email = %s", (premium_id,))
+                    conn.commit()
+                    # Set status premium menjadi False
+                    premium_status = None
+
+            # Cek roles
+            roles = []
+            if role == 'Akun':
+                roles.append('Akun')
+                cur.execute("SELECT * FROM marmut.artist WHERE email_akun = %s", (username,))
+                if cur.fetchone():
+                    roles.append('Artist')
+                
+                cur.execute("SELECT * FROM marmut.songwriter WHERE email_akun = %s", (username,))
+                if cur.fetchone():
+                    roles.append('Songwriter')
+                
+                cur.execute("SELECT * FROM marmut.podcaster WHERE email = %s", (username,))
+                if cur.fetchone():
+                    roles.append('Podcaster')
+            else:
+                roles.append('Label')
+
+            cur.close()
+            conn.close()
+
+            return user, premium_status is not None, roles
+        else:
+            cur.close()
+            conn.close()
+            return None, False, []
+    except psycopg2.Error as e:
+        # Tangani kesalahan koneksi atau query
+        print("Error:", e)
+        return None, False, []
 
 def register(request):
     return render(request, "register.html")
+
+def logout(request):
+    # Clear the session data
+    request.session.flush()
+    # Redirect to the login page or homepage
+    return redirect('marmut_db:show_main')
 
 def register_user(request):
     if request.method == 'POST':
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
+            cleaned_data = form.cleaned_data
+            print(f"Email length: {len(cleaned_data['email'])}")
+            print(f"Password length: {len(cleaned_data['password'])}")
+            print(f"Nama length: {len(cleaned_data['nama'])}")
+            print(f"Tempat Lahir length: {len(cleaned_data['tempat_lahir'])}")
+            print(f"Kota Asal length: {len(cleaned_data['kota_asal'])}")
             form.save()
-            return redirect('marmut_db:show_main')  # Redirect to the main dashboard or any other page
+            return redirect('show_main')
         else:
-            print(form.errors)  # Debugging: Print form errors to the terminal
+            print(form.errors)
     else:
         form = UserRegistrationForm()
     return render(request, 'register_user.html', {'form': form})
