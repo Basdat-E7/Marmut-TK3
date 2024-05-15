@@ -86,6 +86,12 @@
             <a href="{% url 'kelola_playlist:tambah_playlist' %}">
                 <button type="submit">Tambah Playlist</button>
             </a>
+            <h1>Results</h1>
+            <ul>
+                {% for row in rows %}
+                <li>{{ row }}</li>
+                {% endfor %}
+            </ul>
         </div>
     </div>
 </body>

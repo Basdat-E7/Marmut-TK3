@@ -21,8 +21,7 @@ def show_main(request):
     
     return render(request, "dashboard.html")
 
-def login(request):
-
+def login(request):  
     return render(request, "login.html")
 
 def register(request):

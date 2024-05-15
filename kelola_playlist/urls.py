@@ -6,6 +6,7 @@ app_name = 'kelola_playlist'
 
 urlpatterns = [
     path('', show_playlist, name='show_playlist'),
+    path('testdoang/', testing, name = 'cumantest'),
     path('tambah_playlist/', tambah_playlist, name='tambah_playlist'),
     path('detail_playlist/', detail_playlist, name='playlist_detail'),
     path('detail_playlist/tambah_lagu/', tambah_lagu, name='tambah_lagu'),
