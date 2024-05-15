@@ -8,6 +8,7 @@ from itertools import chain
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
+from utils.query import *
 
 def get_db_connection():
     conn = psycopg2.connect(
@@ -54,6 +55,10 @@ def login(request):
                     request.session['gender'] = "Perempuan"
                 else:
                     request.session['gender'] = "Laki-laki"
+                if 'Artist' in roles:
+                    request.session['songs'] = get_songs_by_artist(username)
+                elif 'Songwriter' in roles:
+                    request.session['songs'] = get_songs_by_songwriter(username)
             return redirect('marmut_db:show_main')
         else:
             # Jika autentikasi gagal, tampilkan pesan error
@@ -151,6 +156,45 @@ def authenticate_akun(username, password):
         # Tangani kesalahan koneksi atau query
         print("Error:", e)
         return None, False, []
+
+def get_songs_by_artist(username):
+    
+    # Mengambil id_artis berdasarkan email_akun
+    curr.execute("SELECT id FROM marmut.artist WHERE email_akun = %s", (username,))
+    artist_id = curr.fetchone()[0]
+
+    # Mengambil lagu yang dimiliki oleh artis berdasarkan id_artis
+    curr.execute("""
+        SELECT konten.judul
+        FROM marmut.song
+        INNER JOIN marmut.konten ON song.id_konten = konten.id
+        WHERE song.id_artist = %s
+    """, (artist_id,))
+    songs = [row[0] for row in curr.fetchall()]
+    print(songs)
+    return songs
+        
+
+def get_songs_by_songwriter(username):
+    curr.execute("SELECT id FROM marmut.songwriter WHERE email_akun = %s", (username,))
+    songwriter_id = curr.fetchone()[0]
+
+    curr.execute("SELECT id_song FROM marmut.songwriter_write_song WHERE id_songwriter = %s", (songwriter_id,))
+    song_ids = [row[0] for row in curr.fetchall()]
+
+    song_titles = []
+    for song_id in song_ids:
+        curr.execute("""
+            SELECT konten.judul
+            FROM marmut.song
+            INNER JOIN marmut.konten ON song.id_konten = konten.id
+            WHERE song.id_konten = %s
+        """, (song_id,))
+        song_title = curr.fetchone()[0]
+        song_titles.append(song_title)
+        print(song_titles)
+    return song_titles
+
 
 def register(request):
     return render(request, "register.html")
