@@ -45,6 +45,11 @@ class UserRegistrationForm(forms.ModelForm):
                 elif role == 'songwriter':
                     Songwriter.objects.create(email_akun=user)
         return user
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        cleaned_data = {key: value.strip() if isinstance(value, str) else value for key, value in cleaned_data.items()}
+        return cleaned_data
 
 
 class LabelRegistrationForm(forms.ModelForm):
@@ -53,3 +58,7 @@ class LabelRegistrationForm(forms.ModelForm):
     class Meta:
         model = Label
         fields = ['email', 'password', 'nama', 'kontak']
+
+class LoginForm(forms.Form):
+    username = forms.CharField(max_length=100)
+    password = forms.CharField(widget=forms.PasswordInput)
