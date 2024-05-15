@@ -59,6 +59,10 @@ def login(request):
                     request.session['songs'] = get_songs_by_artist(username)
                 elif 'Songwriter' in roles:
                     request.session['songs'] = get_songs_by_songwriter(username)
+                elif 'Artist' and 'Songwriter' in roles:
+                    request.session['songs'] = get_songs_by_artist(username) + get_songs_by_songwriter(username)
+                elif 'Podcaster' in roles:
+                    request.session['podcasts'] = get_podcasts_by_podcaster(username)
             return redirect('marmut_db:show_main')
         else:
             # Jika autentikasi gagal, tampilkan pesan error
@@ -195,6 +199,23 @@ def get_songs_by_songwriter(username):
         print(song_titles)
     return song_titles
 
+def get_podcasts_by_podcaster(username):
+    # Mendapatkan id_podcaster berdasarkan email
+    curr.execute("SELECT email FROM marmut.podcaster WHERE email = %s", (username,))
+    podcaster_id = curr.fetchone()[0]
+
+    # Mendapatkan id_konten dari podcast yang di-host oleh podcaster tersebut
+    curr.execute("SELECT id_konten FROM marmut.podcast WHERE email_podcaster = %s", (podcaster_id,))
+    id_konten_list = curr.fetchall()
+
+    # Mendapatkan judul podcast berdasarkan id_konten
+    podcast_titles = []
+    for id_konten in id_konten_list:
+        curr.execute("SELECT judul FROM marmut.konten WHERE id = %s", (id_konten,))
+        title = curr.fetchone()[0]
+        podcast_titles.append(title)
+
+    return podcast_titles
 
 def register(request):
     return render(request, "register.html")
