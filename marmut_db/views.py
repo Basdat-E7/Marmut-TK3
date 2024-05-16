@@ -5,10 +5,13 @@ from Marmut_TK3 import settings
 from .models import Song, Podcast, UserPlaylist, Akun, Label
 from .forms import UserRegistrationForm, LabelRegistrationForm, LoginForm
 from itertools import chain
+from django.contrib import messages
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
+
 from utils.query import *
+import uuid
 
 def get_db_connection():
     conn = psycopg2.connect(
@@ -227,32 +230,121 @@ def logout(request):
     return redirect('marmut_db:show_main')
 
 def register_user(request):
+    if "username" in request.session:
+        return redirect("marmut_db:show_main")
+    
     if request.method == 'POST':
-        form = UserRegistrationForm(request.POST)
-        if form.is_valid():
-            cleaned_data = form.cleaned_data
-            print(f"Email length: {len(cleaned_data['email'])}")
-            print(f"Password length: {len(cleaned_data['password'])}")
-            print(f"Nama length: {len(cleaned_data['nama'])}")
-            print(f"Tempat Lahir length: {len(cleaned_data['tempat_lahir'])}")
-            print(f"Kota Asal length: {len(cleaned_data['kota_asal'])}")
-            form.save()
-            return redirect('show_main')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        nama = request.POST.get('nama')
+        gender = request.POST.get('gender')
+        gender_int = 0 if gender == "female" else 1
+        tempat_lahir = request.POST.get('tempat_lahir')
+        tanggal_lahir = request.POST.get('tanggal_lahir')
+        kota_asal = request.POST.get('kota_asal')
+        artist = request.POST.get('is_artist', False)
+        songwriter = request.POST.get('is_songwriter', False)
+        podcaster = request.POST.get('is_podcaster', False)
+
+        is_verified = artist or songwriter or podcaster
+        id_pemilik_hak_cipta = str(uuid.uuid4())
+
+        # cek username exist ga
+        exist = curr.execute("SELECT * FROM marmut.akun WHERE email = %s", (email,))
+        result = curr.fetchone()
+        if result is not None:
+            messages.error(request, "Email already taken. Please choose another email.")
+            return redirect("marmut_db:register_user")
         else:
-            print(form.errors)
-    else:
-        form = UserRegistrationForm()
-    return render(request, 'register_user.html', {'form': form})
+            curr.execute("INSERT INTO marmut.AKUN (email, password, nama, gender, tempat_lahir, tanggal_lahir, is_verified, kota_asal) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)", 
+                         (email, password, nama, gender_int, tempat_lahir, tanggal_lahir, is_verified, kota_asal,))
+            if podcaster:
+                curr.execute( "INSERT INTO marmut.PODCASTER (email) VALUES (%s)", (email,))
+            if artist or songwriter:
+                rate_royalti = 0
+                curr.execute("INSERT INTO marmut.PEMILIK_HAK_CIPTA (id, rate_royalti) VALUES (%s, %s)", 
+                             (id_pemilik_hak_cipta, rate_royalti,))
+            
+            if artist:  
+                id_artist = str(uuid.uuid4())
+                curr.execute("INSERT INTO marmut.ARTIST (id, email_akun, id_pemilik_hak_cipta) VALUES (%s, %s, %s)", 
+                             (id_artist, email, id_pemilik_hak_cipta,))
+
+            if songwriter:
+                id_songwriter = str(uuid.uuid4())
+                curr.execute("INSERT INTO marmut.ARTIST (id, email_akun, id_pemilik_hak_cipta) VALUES (%s, %s, %s)", 
+                             (id_songwriter, email, id_pemilik_hak_cipta,))
+            
+            
+            
+            #insert into database
+            connection.commit()
+            
+            return redirect("marmut_db:show_main")
+        
+    return render(request, 'register_user.html')
+            
+
+
+#     if request.method == 'POST':
+#         form = UserRegistrationForm(request.POST)
+#         if form.is_valid():
+#             cleaned_data = form.cleaned_data
+#             print(f"Email length: {len(cleaned_data['email'])}")
+#             print(f"Password length: {len(cleaned_data['password'])}")
+#             print(f"Nama length: {len(cleaned_data['nama'])}")
+#             print(f"Tempat Lahir length: {len(cleaned_data['tempat_lahir'])}")
+#             print(f"Kota Asal length: {len(cleaned_data['kota_asal'])}")
+#             form.save()
+#             return redirect('show_main')
+#         else:
+#             print(form.errors)
+#     else:
+#         form = UserRegistrationForm()
+#     return render(request, 'register_user.html', {'form': form})
 
 def register_label(request):
+    if "username" in request.session:
+        return redirect("marmut_db:show_main")
+    
     if request.method == 'POST':
-        form = LabelRegistrationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('marmut_db:show_main')  # Redirect to home page or any other page
-    else:
-        form = LabelRegistrationForm()
-    return render(request, 'register_label.html', {'form': form})
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        nama = request.POST.get('nama')
+        kontak = request.POST.get('kontak')
+    
+        id_label = str(uuid.uuid4())
+        id_pemilik_hak_cipta = str(uuid.uuid4())
+
+        exist = curr.execute("SELECT * FROM marmut.label WHERE email = %s", (email,))
+        result = curr.fetchone()
+
+        if result is not None:
+                messages.error(request, "Email already taken. Please choose another email.")
+                return redirect("marmut_db:register_label")
+            
+        else:
+            rate_royalti = 0
+            curr.execute("INSERT INTO marmut.PEMILIK_HAK_CIPTA (id, rate_royalti) VALUES (%s, %s)", 
+                             (id_pemilik_hak_cipta, rate_royalti,))
+            
+            curr.execute("INSERT INTO marmut.LABEL (id, nama, email, password, kontak, id_pemilik_hak_cipta) VALUES (%s, %s, %s, %s, %s, %s)", 
+                         (id_label, nama, email, password, kontak, id_pemilik_hak_cipta))
+            
+            connection.commit()
+            
+            return redirect("marmut_db:show_main")
+        
+    return render(request, 'register_label.html')
+
+    # if request.method == 'POST':
+    #     form = LabelRegistrationForm(request.POST)
+    #     if form.is_valid():
+    #         form.save()
+    #         return redirect('marmut_db:show_main')  # Redirect to home page or any other page
+    # else:
+    #     form = LabelRegistrationForm()
+    # return render(request, 'register_label.html', {'form': form})
 
 def langganan_paket_page(request):
     return render(request, "langganan_paket.html")
