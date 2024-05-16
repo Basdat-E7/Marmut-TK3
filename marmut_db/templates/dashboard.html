@@ -133,7 +133,7 @@
         {% if 'Akun' in request.session.roles %}
         <div class="col-md-3">
                 <h2>Playlist</h2>
-                <p>Belum Memiliki Playlist</p>
+                <p>{{request.session.playlists}}</p>
         </div>
         {% endif %}
         {% if 'Artist' in request.session.roles or 'Songwriter' in request.session.roles %}

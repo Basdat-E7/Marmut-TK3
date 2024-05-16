@@ -55,6 +55,7 @@ def login(request):
                 birthdate_string = user[5].strftime("%d-%m-%Y")
                 request.session['birthdate'] = birthdate_string
                 request.session['city'] = user[7]
+                get_user_playlist_titles(request, username)
                 if user[3] == 0:
                     request.session['gender'] = "Perempuan"
                 else:
@@ -180,7 +181,7 @@ def get_songs_by_artist(username):
         WHERE song.id_artist = %s
     """, (artist_id,))
     songs = [row[0] for row in curr.fetchall()]
-    print(songs)
+    # print(songs)
     return songs
         
 def get_songs_by_songwriter(username):
@@ -200,7 +201,7 @@ def get_songs_by_songwriter(username):
         """, (song_id,))
         song_title = curr.fetchone()[0]
         song_titles.append(song_title)
-        print(song_titles)
+        # print(song_titles)
     return song_titles
 
 def get_podcasts_by_podcaster(username):
@@ -221,6 +222,20 @@ def get_podcasts_by_podcaster(username):
 
     return podcast_titles
 
+def get_user_playlist_titles(request, username):
+    curr.execute("""
+        SELECT judul
+        FROM marmut.user_playlist
+        WHERE email_pembuat = %s
+    """, [username])
+    playlists = curr.fetchall()
+
+    # Extract titles
+    playlist_titles = [playlist[0] for playlist in playlists]
+    print(playlist_titles)
+    # Store the playlist titles in session
+    request.session['playlists'] = playlist_titles
+    
 def register(request):
     return render(request, "register.html")
 
@@ -306,7 +321,7 @@ def search(request):
             WHERE k.judul ILIKE %s OR a.nama ILIKE %s;
         """, [f'%{query}%', f'%{query}%'])
         podcasts = curr.fetchall()
-
+        
         # Search in USER_PLAYLIST table
         curr.execute("""
             SELECT 'Playlist' AS type, up.judul, a.nama AS by
