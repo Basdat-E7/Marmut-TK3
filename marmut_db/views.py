@@ -283,13 +283,44 @@ def downloaded_songs(request):
 
 def search(request):
     query = request.GET.get('q')
+    print(query)
+    results = []
     if query:
-        songs = Song.objects.filter(Q(title__icontains=query) | Q(artist__name__icontains=query))
-        podcasts = Podcast.objects.filter(Q(title__icontains=query) | Q(podcaster__name__icontains=query))
-        playlists = UserPlaylist.objects.filter(Q(name__icontains=query) | Q(creator__name__icontains=query))
+        curr.execute("""
+            SELECT 'Song' AS type, k.judul, a.nama AS by
+            FROM marmut.SONG s
+            JOIN marmut.KONTEN k ON s.id_konten = k.id
+            JOIN marmut.ARTIST ar ON s.id_artist = ar.id
+            JOIN marmut.AKUN a ON ar.email_akun = a.email
+            WHERE k.judul ILIKE %s OR a.nama ILIKE %s;
+        """, [f'%{query}%', f'%{query}%'])
+        songs = curr.fetchall()
+
+        # Search in PODCAST table
+        curr.execute("""
+            SELECT 'Podcast' AS type, k.judul, a.nama AS by
+            FROM marmut.PODCAST p
+            JOIN marmut.KONTEN k ON p.id_konten = k.id
+            JOIN marmut.PODCASTER pod ON p.email_podcaster = pod.email
+            JOIN marmut.AKUN a ON pod.email = a.email
+            WHERE k.judul ILIKE %s OR a.nama ILIKE %s;
+        """, [f'%{query}%', f'%{query}%'])
+        podcasts = curr.fetchall()
+
+        # Search in USER_PLAYLIST table
+        curr.execute("""
+            SELECT 'Playlist' AS type, up.judul, a.nama AS by
+            FROM marmut.USER_PLAYLIST up
+            JOIN marmut.AKUN a ON up.email_pembuat = a.email
+            WHERE up.judul ILIKE %s OR a.nama ILIKE %s;
+        """, [f'%{query}%', f'%{query}%'])
+        playlists = curr.fetchall()
+
+        # Combine all results
         results = list(chain(songs, podcasts, playlists))
     else:
         results = None
+    print(results)
     return render(request, 'search_results.html', {'results': results})
 
 def langganan_paket(request):
