@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chart List</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+        .card {
+            width: 50%;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px;
+            text-align: center;
+            background-color: #ffcc00;
+            color: #fff;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .btn:hover {
+            background-color: #ffcc00cc;
+        }
+        .btn-back {
+            display: block;
+            margin-top: 20px;
+            background-color: #ffcc00;
+            color: #fff;
+            text-decoration: none;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            text-align: center;
+            transition: background-color 0.3s ease;
+        }
+        .btn-back:hover {
+            background-color: #ffcc00cc;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>CHART LIST</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Tipe</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for chart_type in chart_types %}
+                <tr>
+                    <td>{{ chart_type }}</td>
+                    <td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#{{ chart_type|slugify }}Modal">Lihat Daftar Lagu</button></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="#" class="btn-back">Kembali</a>
+    </div>
+
+    {% for chart_type, songs in chart_details.items %}
+    <div class="modal fade" id="{{ chart_type|slugify }}Modal" tabindex="-1" role="dialog" aria-labelledby="{{ chart_type|slugify }}ModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="{{ chart_type|slugify }}ModalLabel">{{ chart_type }}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Judul Lagu</th>
+                  <th>Oleh</th>
+                  <th>Tanggal Rilis</th>
+                  <th>Total Plays</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for song in songs %}
+                <tr>
+                  <td>{{ song.1 }}</td>
+                  <td>{{ song.2 }}</td>
+                  <td>{{ song.3 }}</td>
+                  <td>{{ song.4 }}</td>
+                  <td><button type="button" class="btn btn-primary">Lihat</button></td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+</body>
+</html>
