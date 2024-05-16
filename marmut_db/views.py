@@ -294,7 +294,33 @@ def purchase_history(request):
     return render(request, "purchase_history.html")
 
 def downloaded_songs(request):
-    return render(request, "downloaded_songs.html")
+    email = request.session.get('email')
+    print(email)
+    if request.method == 'POST':
+        song_id_to_delete = request.POST.get('song_id_to_delete')
+        print(song_id_to_delete)
+        curr.execute("""
+            DELETE FROM marmut.downloaded_song
+            WHERE id_song = %s AND email_downloader = %s
+        """, [song_id_to_delete, email])
+        connection.commit()
+
+    # Query to get downloaded songs and their artists
+    curr.execute("""
+        SELECT k.judul, ak.nama, s.id_konten
+        FROM marmut.downloaded_song ds
+        JOIN marmut.song s ON ds.id_song = s.id_konten
+        JOIN marmut.artist a ON s.id_artist = a.id
+        JOIN marmut.konten k ON s.id_konten = k.id
+        JOIN marmut.akun ak ON ak.email = a.email_akun
+        WHERE ds.email_downloader = %s
+    """, [email])
+    
+    downloaded_songs = curr.fetchall()
+    print(downloaded_songs)
+        
+    # Pass the data to the template
+    return render(request, 'downloaded_songs.html', {'downloaded_songs': downloaded_songs})
 
 def search(request):
     query = request.GET.get('q')

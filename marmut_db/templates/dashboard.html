@@ -132,26 +132,34 @@
     <div class="row">
         {% if 'Akun' in request.session.roles %}
         <div class="col-md-3">
-                <h2>Playlist</h2>
-                <p>{{request.session.playlists}}</p>
+            <h2>Playlist</h2>
+            {% if request.session.playlists %}
+                <p>{{ request.session.playlists }}</p>
+            {% else %}
+                <p>Belum memiliki playlist</p>
+            {% endif %}
         </div>
         {% endif %}
+        
         {% if 'Artist' in request.session.roles or 'Songwriter' in request.session.roles %}
         <div class="col-md-3">
-                <h2>Songs</h2>
-                <p>{{request.session.songs}}</p>
+            <h2>Songs</h2>
+            {% if request.session.songs %}
+                <p>{{ request.session.songs }}</p>
+            {% else %}
+                <p>Belum memiliki songs</p>
+            {% endif %}
         </div>
         {% endif %}
+        
         {% if 'Podcaster' in request.session.roles %}
         <div class="col-md-3">
             <h2>Podcast</h2>
-            <p>{{request.session.podcasts}}</p>
-        </div>
-        {% endif %}
-        {% if 'Label' in request.session.roles %}
-        <div class="col-md-3">
-            <h2>Album</h2>
-            <p>Belum Memiliki album</p>
+            {% if request.session.podcasts %}
+                <p>{{ request.session.podcasts }}</p>
+            {% else %}
+                <p>Belum memiliki podcast</p>
+            {% endif %}
         </div>
         {% endif %}
     </div>

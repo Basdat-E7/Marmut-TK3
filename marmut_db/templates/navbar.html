@@ -11,7 +11,7 @@
             {% endif %}
         
             {% if request.session.premium_status == 'Premium' %}
-            <li><a href="">Downloaded Songs</a></li>
+            <li><a href="{% url 'marmut_db:downloaded_songs' %}">Downloaded Songs</a></li>
             {% endif %}
 
             {% if 'Podcaster' in request.session.roles %}
