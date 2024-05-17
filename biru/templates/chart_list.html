@@ -113,10 +113,10 @@
               <tbody>
                 {% for song in songs %}
                 <tr>
-                  <td>{{ song.1 }}</td>
-                  <td>{{ song.2 }}</td>
-                  <td>{{ song.3 }}</td>
-                  <td>{{ song.4 }}</td>
+                  <td>{{ song.title }}</td>
+                  <td>{{ song.artist_name }}</td>
+                  <td>{{ song.release_date|date:"d/m/Y" }}</td>
+                  <td>{{ song.plays }}</td>
                   <td><button type="button" class="btn btn-primary">Lihat</button></td>
                 </tr>
                 {% endfor %}
