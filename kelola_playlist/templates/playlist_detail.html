@@ -9,7 +9,7 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: rgb(230, 230, 79); 
+            background-color: #fff; 
         }
         .container {
             max-width: 800px;
@@ -44,7 +44,7 @@
             text-align: left;
         }
         .song-table th {
-            background-color: #f2f2f2;
+            background-color: rgb(230, 230, 79);
         }
         .song-table tr:hover {
             background-color: #f9f9f9;
@@ -80,22 +80,25 @@
         }
     </style>
 </head>
+{% block navbar %}
+    {% include 'navbar.html' %}
+{% endblock %}
 <body>
     <div class="container">
         <h1>Detail Playlist</h1>
         <div class="playlist-info">
             <label>Judul Playlist:</label>
-            <p>Magic Kingdom</p>
+            <p>{{details.0}}</p>
             <label>Pembuat Playlist:</label>
-            <p>Imroatus</p>
+            <p>{{details.6}}</p>
             <label>Jumlah Lagu:</label>
-            <p>5</p>
+            <p>{{amount_songs.0}}</p>
             <label>Total Durasi:</label>
-            <p>16 menit</p>
+            <p>{{ total_duration.0 }} Jam {{ total_duration.1 }} Menit</p>
             <label>Tanggal Dibuat:</label>
-            <p>9 April 2024</p>
+            <p>{{details.3}}</p>
             <label>Deskripsi Playlist:</label>
-            <p>“you have sustained no injuries. however, your hormone and neurotransmitter levels indicate that you are experiencing mood swings, common in adolescence”</p>
+            <p>{{details.4}}</p>
         </div>
         <h2>Daftar Lagu</h2>
         <table class="song-table">
@@ -108,66 +111,37 @@
                 </tr>
             </thead>
             <tbody>
+                {%for song in songs%}
                 <tr>
-                    <td>Lagu 1</td>
-                    <td>Penyanyi 1</td>
-                    <td>3:30</td>
+                    <td>{{song.0}}</td>
+                    <td>{{song.1}}</td>
+                    <td>{{song.2}}</td>
                     <td class="actions">
-                        <a href="{% url 'kelola_playlist:play_song' %}", style="text-decoration: none">
+                        <a href="{% url 'kelola_playlist:detail_song' id_song=song.3%}", style="text-decoration: none">
                             <button>Lihat</button>
                         </a>
                         <button>Play</button>
-                        <button>Hapus</button>
+                        <form action="{%url 'kelola_playlist:delete_song' id_playlist=details.5 id_song=song.3%}" method="post">
+                            {% csrf_token %}
+                            <button type="submit">Hapus</button>
+                        </form>
                     </td>
                 </tr>
-                <tr>
-                    <td>Lagu 2</td>
-                    <td>Penyanyi 2</td>
-                    <td>3:30</td>
-                    <td class="actions">
-                        <button>Lihat</button>
-                        <button>Play</button>
-                        <button>Hapus</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Lagu 3</td>
-                    <td>Penyanyi 3</td>
-                    <td>3:00</td>
-                    <td class="actions">
-                        <button>Lihat</button>
-                        <button>Play</button>
-                        <button>Hapus</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Lagu 4</td>
-                    <td>Penyanyi 4</td>
-                    <td>3:00</td>
-                    <td class="actions">
-                        <button>Lihat</button>
-                        <button>Play</button>
-                        <button>Hapus</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Lagu 5</td>
-                    <td>Penyanyi 5</td>
-                    <td>3:00</td>
-                    <td class="actions">
-                        <button>Lihat</button>
-                        <button>Play</button>
-                        <button>Hapus</button>
-                    </td>
-                </tr>
+                {% endfor %}
             </tbody>
         </table>
         <div class="add-song-button">
-            <a href="{% url 'kelola_playlist:tambah_lagu' %}", style="text-decoration: none">
+            <a href="{% url 'kelola_playlist:tambah_lagu' id_playlist=details.5%}", style="text-decoration: none">
                 <button>Tambah Lagu</button>
             </a>
             <button>Shuffle Play</button>
-            <button>Kembali</button>
+            <button onclick="goBack()">Kembali</button>
+
+                <script>
+                    function goBack() {
+                        window.history.back();
+                    }
+                </script>        
         </div>
     </div>
 </body>

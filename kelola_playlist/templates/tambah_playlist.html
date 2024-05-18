@@ -58,7 +58,8 @@
 <body>
     <div class="container">
         <h1>Tambah Playlist Baru</h1>
-        <form id="addPlaylistForm">
+        <form id="addPlaylistForm" method="POST" action="{% url 'kelola_playlist:tambah_playlist' %}">
+            {% csrf_token %}
             <label for="title">Judul Playlist:</label>
             <input type="text" id="title" name="title" required>
             <label for="description">Deskripsi:</label>
