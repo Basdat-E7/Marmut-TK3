@@ -33,9 +33,42 @@
                 <div class="card">
                     <div class="card-header text-center">Register User</div>
                     <div class="card-body">
-                        <form method="post">
+                        <form method="post" action="{% url 'marmut_db:register_user' %}">
                             {% csrf_token %}
-                            <div class="form-group">
+                            <label for="email" class="form-label">Email:</label>
+                            <input type="email" id="email" name="email" required class="form-control"><br>
+                
+                            <label for="password" class="form-label">Password:</label>
+                            <input type="password" id="password" name="password" required class="form-control"><br>
+                
+                            <label for="nama" class="form-label">Nama:</label>
+                            <input type="text" id="nama" name="nama" required class="form-control"><br>
+                
+                            <label for="gender" class="form-label">Gender:</label>
+                            <select id="gender" name="gender" class="form-control">
+                                <option value="female">Perempuan</option>
+                                <option value="male">Laki-laki</option>
+                            </select><br>
+                            
+                            <label for="tempat_lahir" class="form-label">Tempat Lahir :</label>
+                            <input type="text" id="tempat_lahir" name="tempat_lahir" required class="form-control"><br>
+                
+                            <label for="tanggal_lahir" class="form-label">Tanggal lahir:</label>
+                            <input type="date" id="tanggal_lahir" name="tanggal_lahir" required class="form-control"><br>
+                
+                            <label for="kota_asal" class="form-label">Kota asal:</label>
+                            <input type="text" id="kota_asal" name="kota_asal" required class="form-control"><br>
+                
+                            <label class="form-label">Role:</label><br>
+                            <input type="checkbox" id="podcaster" name="is_podcaster" value=True class="form-check-input">
+                            <label for="podcaster" class="form-check-label">Podcaster</label><br>
+                
+                            <input type="checkbox" id="artist" name="is_artist" value=True class="form-check-input">
+                            <label for="artist" class="form-check-label">Artist</label><br>
+                
+                            <input type="checkbox" id="songwriter" name="is_songwriter" value=True class="form-check-input">
+                            <label for="songwriter" class="form-check-label">Songwriter</label><br><br>
+                            <!-- <div class="form-group">
                                 <label for="id_email">Email:</label>
                                 {{ form.email }}
                             </div>
@@ -71,9 +104,9 @@
                                         <label class="form-check-label" for="{{ checkbox.id_for_label }}">
                                             {{ checkbox.choice_label }}
                                         </label>
-                                    </div>
-                                {% endfor %}
-                            </div>
+                                    </div> -->
+                                <!-- {% endfor %} -->
+                            <!-- </div> --> 
                             <button type="submit" class="btn btn-primary btn-block">Submit</button>
                         </form>
                     </div>

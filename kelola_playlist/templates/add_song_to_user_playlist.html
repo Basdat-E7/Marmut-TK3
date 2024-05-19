@@ -52,6 +52,13 @@
         .button-container button {
             margin-right: 10px;
         }
+        .error-message {
+            color: red;
+            font-weight: bold;
+            margin: 10px 0;
+            text-align: center;
+
+        }
         /* Modal Style */
         .modal {
             display: none;
@@ -86,26 +93,33 @@
 <body>
     <div class="container">
         <h1>Tambah Lagu ke Playlist</h1>
-        <form id="addSongToPlaylistForm">
+        <form id="addSongToPlaylistForm" method="POST" action="{% url 'kelola_playlist:add_song_to_user_playlist' id_song=id.0 %}">
+            {% csrf_token %}
             <label for="title"><strong>Judul:</strong></label>
-            <p>Lagu 1</p>
+            <p>{{judul.0}}</p>
             <label for="artist"><strong>Penyanyi:</strong></label>
-            <p>Penyanyi 1</p>
+            <p>{{artist.0}}</p>
             <label for="playlist"><strong>Pilih Playlist:</strong></label>
-            <select id="playlist" name="playlist">
-                <option value="playlist1">Magic Kingdom</option>
-                <option value="playlist2">Warm Butter Sliding Down Hot Toast</option>
+            <select id="id_playlist" name="id_playlist">
+                {%for playlist in playlists%}
+                <option value="{{playlist.1}}">{{playlist.0}}</option>
+                {%endfor%}
             </select>
             <div class="button-container">
-                <button type="button" id="addButton">Tambah</button>
+                <button type="submit" id="addButton">Tambah</button>
                 <button type="button">Kembali</button>
             </div>
         </form>
+        {% if error_message %}
+        <div class="error-message">
+            <p>{{ error_message }}</p>
+        </div>
+        {% endif %}
     </div>
 
     <div id="myModal" class="modal">
         <div class="modal-content">
-            <p>Lagu 1 berhasil ditambahkan ke playlist Magic Kingdom!</p>
+            <p>{{judul.0}} berhasil ditambahkan ke playlist {{playlist.0}}!</p>
             <div class="modal-button-container">
                 <button id="toPlaylistButton">Ke Playlist</button>
                 <button id="closeButton">Kembali</button>
@@ -121,6 +135,18 @@
         var closeButton = document.getElementById("closeButton");
 
         var toPlaylistButton = document.getElementById("toPlaylistButton");
+
+        addButton.onclick = function() {
+            var selectedPlaylist = document.getElementById("id_playlist");
+            var playlistName = selectedPlaylist.options[selectedPlaylist.selectedIndex].text;
+            var songTitle = document.getElementById("songTitle").innerText;
+
+            // Update the modal message with the song title and playlist name
+            document.getElementById("modalMessage").innerText = songTitle + " berhasil ditambahkan ke playlist " + playlistName + "!";
+
+            // Display the modal
+            modal.style.display = "block";
+        }
 
         addButton.onclick = function() {
             modal.style.display = "block";
