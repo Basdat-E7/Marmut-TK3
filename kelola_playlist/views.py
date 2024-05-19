@@ -8,7 +8,7 @@ from django.shortcuts import render, HttpResponseRedirect, reverse, HttpResponse
 # Create your views here.
 def tambah_playlist(request):
     if request.method == "POST":
-        try:
+        # try:
             judul_playlist = request.POST.get('title', '')  
             deskripsi_playlist = request.POST.get('description', '')
             email = request.session.get('email', '')
@@ -18,6 +18,7 @@ def tambah_playlist(request):
 
             add_playlist = """INSERT INTO marmut.PLAYLIST (id) VALUES(%s)"""
             curr.execute(add_playlist, (id_playlist,))
+            connection.commit()
 
             add_user_playlist = """INSERT INTO marmut.USER_PLAYLIST 
                                 (email_pembuat, id_user_playlist, judul, deskripsi, 
@@ -28,12 +29,12 @@ def tambah_playlist(request):
 
             return HttpResponseRedirect(reverse('kelola_playlist:show_playlists'))
 
-        except Exception as e:
-            connection.rollback()
+        # except Exception as e:
+        #     connection.rollback()
             
-            messages.error(request, f"Failed to add playlist: {str(e)}")
+        #     messages.error(request, f"Failed to add playlist: {str(e)}")
 
-            return HttpResponseRedirect(reverse('kelola_playlist:tambah_playlist'))
+        #     return HttpResponseRedirect(reverse('kelola_playlist:tambah_playlist'))
 
     return render(request, "tambah_playlist.html")
 
@@ -99,7 +100,7 @@ def detail_playlist(request, id_playlist):
 
     query_details = """SELECT U.judul, U.jumlah_lagu, U.total_durasi, 
             U.tanggal_dibuat, U.deskripsi, U.id_playlist, A.nama,
-            P.id_song
+            P.id_song, U.id_user_playlist
             FROM marmut.user_playlist AS U, marmut.akun AS A, 
             marmut.playlist_song AS P
             WHERE U.email_pembuat = A.email AND U.id_playlist=%s"""
@@ -312,7 +313,14 @@ def delete_song(request, id_playlist, id_song):
     return render(request, "playlist_detail.html")
 
 def detail_song(request,id_song):
-    
+    email = request.session.get('email', '')
+
+    check_premium = """SELECT 1 FROM marmut.premium
+                            WHERE email=%s"""
+    curr.execute(check_premium, (email,))
+    premium_check = curr.fetchone()
+    is_premium = premium_check is not None
+
     query_judul_song = """SELECT K.judul, K.tanggal_rilis, K.tahun, K.durasi, S.total_play,
                         S.total_download
                         FROM marmut.konten AS K, marmut.song AS S
@@ -357,10 +365,26 @@ def detail_song(request,id_song):
         'detail_c':songwriter,
         'detail_d':album,
         'detail_e':genre,
-        'get_id':id_get
+        'get_id':id_get,
+        'is_premium':is_premium,
     }
 
     return render(request, "detail_song.html", context)
+
+def slider_play(request, id_song):
+    if request.method == "POST":
+
+        email = request.session.get('email', '')
+        timestamp_now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+        add_play  = """INSERT INTO marmut.akun_play_song 
+                    (email_pemain, id_song, waktu) 
+                    VALUES (%s, %s, %s)"""
+        curr.execute(add_play, (email, id_song, timestamp_now))
+        connection.commit()
+        return HttpResponseRedirect(reverse('kelola_playlist:detail_song', args=(id_song,)))
+
+    return render(request, "detail_song.html")
 
 def add_song_to_playlist(request,id_song):
 
@@ -396,10 +420,16 @@ def add_song_to_playlist(request,id_song):
         'playlists':detail,
         'id':id_get,
     }
+    
 
     if request.method == "POST":
 
         id_playlist = request.POST.get('id_playlist', '')
+        check_playlist = """SELECT judul
+                        FROM marmut.user_playlist
+                        WHERE id_playlist=%s"""
+        curr.execute(check_playlist,(id_playlist,))
+        judul_playlist = curr.fetchone()
 
         check_song_query = """SELECT 1 FROM marmut.playlist_song
                             WHERE id_playlist = %s AND id_song = %s"""
@@ -408,9 +438,10 @@ def add_song_to_playlist(request,id_song):
 
         if song_exists:
             # Lagu sudah ada di playlist, tampilkan pesan error
-            context['error_message'] = "Lagu dengan ada di dalam playlist."
+            context['error_message'] = "Lagu dengan judul " + deksripsi[0] + " sudah ada di playlist " + judul_playlist[0]
             return render(request, "add_song_to_user_playlist.html", context)
         else:
+            context['success_message'] = f"{deksripsi[0]} berhasil ditambahkan ke playlist {judul_playlist[0]}"
             add_to_playlist = """INSERT INTO marmut.playlist_song
                                     (id_playlist, id_song) 
                                     VALUES (%s, %s)"""
@@ -456,15 +487,78 @@ def add_song_to_playlist(request,id_song):
                                 WHERE id_playlist = %s"""
             curr.execute(edit_durasi_songs,(total_duration[0],id_playlist,))
             connection.commit()
-            return HttpResponseRedirect(reverse('kelola_playlist:detail_song', args=(id_song,)))
+            return render(request, "add_song_to_user_playlist.html",context)
 
     return render(request, "add_song_to_user_playlist.html",context)
 
-def play_song(request,id_song):
+def shuffle_play(request, id_playlist, id_user_playlist):
     if request.method == "POST":
+        email = request.session.get('email', '')
+        timestamp_now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+        query_songs = """SELECT DISTINCT PS.id_song
+            FROM marmut.PLAYLIST_SONG AS PS
+            JOIN marmut.SONG AS S ON PS.id_song = S.id_konten
+            JOIN marmut.KONTEN AS K ON S.id_konten = K.id
+            JOIN marmut.ARTIST AS Ar ON S.id_artist = Ar.id
+            JOIN marmut.akun AS Ak ON Ar.email_akun = Ak.email
+            WHERE PS.id_playlist = %s"""
+    
+        curr.execute(query_songs, (id_playlist,))
+        songses = curr.fetchall()
+
+        play_playlist = """INSERT INTO marmut.akun_play_user_playlist
+                        (email_pemain, id_user_playlist, email_pembuat, waktu)
+                        VALUES (%s, %s, %s, %s)"""
         
+        curr.execute(play_playlist, (email, id_user_playlist, email, timestamp_now,))
+        connection.commit()
+
+        play_all_songs = """INSERT INTO marmut.akun_play_song
+                        (email_pemain, id_song, waktu)
+                        VALUES (%s, %s, %s)"""
+        for song in songses:
+            curr.execute(play_all_songs, (email, song[0], timestamp_now,))
+            connection.commit()
+
+        return HttpResponseRedirect(reverse('kelola_playlist:detail_playlist', args=(id_playlist,)))
+    
+    return render(request, "playlist_detail.html")
+
+def play_song(request,id_playlist, id_song):
+    if request.method == "POST":
+        email = request.session.get('email', '')
         timestamp_now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         
-        return HttpResponseRedirect(reverse('kelola_playlist:tambah_playlist'))
+        playing_song = """INSERT INTO marmut.akun_play_song 
+                        (email_pemain, id_song, waktu) 
+                        VALUES (%s, %s, %s)"""
+        curr.execute(playing_song, (email, id_song, timestamp_now))
+        connection.commit()
+
+        return HttpResponseRedirect(reverse('kelola_playlist:detail_playlist', args=(id_playlist,)))
 
     return render(request, "playlist_detail.html")
+
+def download_song(request, id_song):
+    try:
+        if request.method == "POST":
+            email = request.session.get('email', '')
+
+            downloader = """INSERT INTO marmut.downloaded_song
+                            (id_song, email_downloader)
+                            VALUES (%s, %s)"""
+            curr.execute(downloader, (id_song, email,))
+            connection.commit()
+            messages.success(request, 'Berhasil mengunduh lagu.')
+
+            return HttpResponseRedirect(reverse('kelola_playlist:detail_song', args=(id_song,)))
+        
+    except Exception as e:
+        connection.rollback()
+
+        messages.error(request, 'Gagal mengunduh lagu: ' + str(e))
+
+        return HttpResponseRedirect(reverse('kelola_playlist:detail_song', args=(id_song,)))
+
+    return render(request, "detail_song.html")

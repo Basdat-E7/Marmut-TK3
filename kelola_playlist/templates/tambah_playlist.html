@@ -55,6 +55,9 @@
         }
     </style>
 </head>
+{% block navbar %}
+    {% include 'navbar.html' %}
+{% endblock %}
 <body>
     <div class="container">
         <h1>Tambah Playlist Baru</h1>
@@ -62,8 +65,10 @@
             {% csrf_token %}
             <label for="title">Judul Playlist:</label>
             <input type="text" id="title" name="title" required>
+
             <label for="description">Deskripsi:</label>
             <textarea id="description" name="description" required></textarea>
+
             <div style="text-align: center;">
                 <button type="submit">Submit</button>
             </div>

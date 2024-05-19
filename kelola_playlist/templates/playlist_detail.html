@@ -41,7 +41,7 @@
         .song-table th, .song-table td {
             padding: 10px;
             border-bottom: 1px solid #ddd;
-            text-align: left;
+            text-align: center;
         }
         .song-table th {
             background-color: rgb(230, 230, 79);
@@ -115,12 +115,17 @@
                 <tr>
                     <td>{{song.0}}</td>
                     <td>{{song.1}}</td>
-                    <td>{{song.2}}</td>
+                    <td>{{song.2}} Menit</td>
                     <td class="actions">
                         <a href="{% url 'kelola_playlist:detail_song' id_song=song.3%}", style="text-decoration: none">
                             <button>Lihat</button>
                         </a>
-                        <button>Play</button>
+
+                        <form action="{%url 'kelola_playlist:play_song' id_playlist=details.5 id_song=song.3%}" method="post">
+                            {% csrf_token %}
+                            <button>Play</button>
+                        </form>
+
                         <form action="{%url 'kelola_playlist:delete_song' id_playlist=details.5 id_song=song.3%}" method="post">
                             {% csrf_token %}
                             <button type="submit">Hapus</button>
@@ -134,14 +139,15 @@
             <a href="{% url 'kelola_playlist:tambah_lagu' id_playlist=details.5%}", style="text-decoration: none">
                 <button>Tambah Lagu</button>
             </a>
-            <button>Shuffle Play</button>
-            <button onclick="goBack()">Kembali</button>
+            <form action="{%url 'kelola_playlist:shuffle_play' id_playlist=details.5 id_user_playlist=details.8%}" method="post">
+                {% csrf_token %}
+                <button>Shuffle Play</button>
+            </form>
+            <a href="{%url 'kelola_playlist:show_playlists' %}">
+                <button>Kembali</button>
+            </a>
 
-                <script>
-                    function goBack() {
-                        window.history.back();
-                    }
-                </script>        
+    
         </div>
     </div>
 </body>

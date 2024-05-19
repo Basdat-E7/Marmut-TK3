@@ -9,13 +9,13 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: rgb(230, 230, 79);
+            background-color: #fefefe;
         }
         .container {
             max-width: 600px;
             margin: 20px auto;
             padding: 20px;
-            background-color: #fff;
+            background-color: rgb(230, 230, 79);
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
@@ -90,6 +90,9 @@
         }
     </style>
 </head>
+{% block navbar %}
+    {% include 'navbar.html' %}
+{% endblock %}
 <body>
     <div class="container">
         <h1>Tambah Lagu ke Playlist</h1>
@@ -107,64 +110,11 @@
             </select>
             <div class="button-container">
                 <button type="submit" id="addButton">Tambah</button>
-                <button type="button">Kembali</button>
             </div>
         </form>
-        {% if error_message %}
-        <div class="error-message">
-            <p>{{ error_message }}</p>
-        </div>
-        {% endif %}
+        <a href="{% url 'kelola_playlist:show_playlists' %}">
+            <button type="submit">Kembali</button>
+        </a>
     </div>
-
-    <div id="myModal" class="modal">
-        <div class="modal-content">
-            <p>{{judul.0}} berhasil ditambahkan ke playlist {{playlist.0}}!</p>
-            <div class="modal-button-container">
-                <button id="toPlaylistButton">Ke Playlist</button>
-                <button id="closeButton">Kembali</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        var modal = document.getElementById("myModal");
-
-        var addButton = document.getElementById("addButton");
-
-        var closeButton = document.getElementById("closeButton");
-
-        var toPlaylistButton = document.getElementById("toPlaylistButton");
-
-        addButton.onclick = function() {
-            var selectedPlaylist = document.getElementById("id_playlist");
-            var playlistName = selectedPlaylist.options[selectedPlaylist.selectedIndex].text;
-            var songTitle = document.getElementById("songTitle").innerText;
-
-            // Update the modal message with the song title and playlist name
-            document.getElementById("modalMessage").innerText = songTitle + " berhasil ditambahkan ke playlist " + playlistName + "!";
-
-            // Display the modal
-            modal.style.display = "block";
-        }
-
-        addButton.onclick = function() {
-            modal.style.display = "block";
-        }
-
-        closeButton.onclick = function() {
-            modal.style.display = "none";
-        }
-
-        toPlaylistButton.onclick = function() {
-            window.location.replace("playlist.html");
-        }
-
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
-        }
-    </script>
 </body>
 </html>
