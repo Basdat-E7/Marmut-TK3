@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -9,7 +10,7 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
+            background-color: #FFFFFF;
         }
         .container {
             max-width: 800px;
@@ -18,6 +19,12 @@
             background-color: #fff;
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .title {
+            font-size: 32px; 
+            font-weight: bold;
+            text-align: center; 
+            margin-bottom: 20px;
         }
         h1 {
             text-align: center;
@@ -29,7 +36,7 @@
         th, td {
             padding: 10px;
             border-bottom: 1px solid rgb(230, 230, 79);
-            text-align: left;
+            text-align: center;
         }
         th {
             background-color: rgb(230, 230, 79);
@@ -53,11 +60,25 @@
         .add-button button:hover {
             background-color: #45a049;
         }
+        .no-playlist {
+            text-align: center;
+            font-size: 24px;
+            margin: 40px 0;
+            padding: 20px;
+            border: 2px dashed #ddd;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+        }
     </style>
 </head>
+{% block navbar %}
+    {% include 'navbar.html' %}
+{% endblock %}
 <body>
     <div class="container">
-        <h1>User Playlist</h1>
+        <div class="title">User Playlist</div>
+        
+        {% if rows %}
         <table>
             <thead>
                 <tr>
@@ -68,23 +89,36 @@
                 </tr>
             </thead>
             <tbody>
+                {% for playlist in rows %}
                 <tr>
-                    <td>Magic Kingdom</td>
-                    <td>5</td>
-                    <td>16 menit</td>
+                    <td>{{ playlist.0 }}</td>
+                    <td>{{ playlist.1 }}</td>
+                    <td>{{ playlist.2 }} Menit</td>
                     <td class="action">
-                        <a href="{% url 'kelola_playlist:playlist_detail' %}", style="text-decoration: none">
-                            <button type="submit">Detail</button>
+                        <a href="{% url 'kelola_playlist:detail_playlist' id_playlist=playlist.4 %}" style="text-decoration: none">
+                            <button type="button">Detail</button>
                         </a>
-                        <button>Edit</button>
-                        <button>Delete</button>
+                        <a href="{% url 'kelola_playlist:ubah_playlist' id_playlist=playlist.4 %}" style="text-decoration: none">
+                            <button type="button">Ubah</button>
+                        </a>
+                        <form action="{% url 'kelola_playlist:delete_playlist' id_playlist=playlist.4 %}" method="post" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit">Hapus</button>
+                        </form>
                     </td>
                 </tr>
+                {% endfor %}
             </tbody>
         </table>
+        {% else %}
+        <div class="no-playlist">
+            Anda belum memiliki playlist
+        </div>
+        {% endif %}
+        
         <div class="add-button">
             <a href="{% url 'kelola_playlist:tambah_playlist' %}">
-                <button type="submit">Tambah Playlist</button>
+                <button type="button">Tambah Playlist</button>
             </a>
         </div>
     </div>

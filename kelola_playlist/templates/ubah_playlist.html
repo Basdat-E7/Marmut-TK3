@@ -3,25 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tambah Lagu ke Playlist</title>
+    <title>Ubah Playlist</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: rgb(230, 230, 79); 
+            background-color: #f4f4f4;
         }
         .container {
             max-width: 600px;
             margin: 20px auto;
             padding: 20px;
-            background-color: #fff;
+            background-color: rgb(230, 230, 79);
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
         h1 {
             text-align: center;
-            color: #333; 
         }
         form {
             margin-top: 20px;
@@ -29,16 +28,9 @@
         label {
             display: block;
             margin-bottom: 5px;
-            color: #333; 
         }
-        .error-message {
-            color: red;
-            font-weight: bold;
-            margin: 10px 0;
-            text-align: center;
-
-        }
-        select, button[type="submit"] {
+        input[type="text"],
+        textarea {
             width: 100%;
             padding: 10px;
             margin-bottom: 10px;
@@ -46,36 +38,36 @@
             border-radius: 5px;
             box-sizing: border-box;
         }
+        textarea {
+            resize: vertical;
+            height: 150px;
+        }
         button[type="submit"] {
-            background-color: #4CAF50; 
-            color: white; 
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
             border: none;
+            border-radius: 5px;
             cursor: pointer;
         }
         button[type="submit"]:hover {
-            background-color: #45a049; 
+            background-color: #45a049;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Tambah Lagu ke Playlist</h1>
-        
-        <form id="addSongToPlaylistForm" method="POST" action="{% url 'kelola_playlist:tambah_lagu' id_playlist=id.0 %}">
+        <h1>Update Playlist</h1>
+        <form id="editPlaylistForm" method="POST" action="{% url 'kelola_playlist:ubah_playlist' id_playlist=id.0 %}">
             {% csrf_token %}
-            <label for="song">Pilih Lagu:</label>
-            <select id="id_lagu" name="id_lagu">
-                {%for lagu in rows%}
-                <option value={{lagu.2}}>{{lagu.0}} - {{lagu.1}}</option>
-                {% endfor %}
-            </select>
-            <button type="submit">Tambah ke Playlist</button>
+            <label for="title">Judul Playlist:</label>
+            <input type="text" id="title" name="title" required>
+            <label for="description">Deskripsi:</label>
+            <textarea id="description" name="description" required></textarea>
+            <div style="text-align: center;">
+                <button type="submit">Submit</button>
+            </div>
         </form>
-        {% if error_message %}
-        <div class="error-message">
-            <p>{{ error_message }}</p>
-        </div>
-        {% endif %}
     </div>
 </body>
 </html>

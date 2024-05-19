@@ -9,7 +9,7 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: rgb(230, 230, 79);
+            background-color: #fff;
         }
         .container {
             max-width: 600px;
@@ -77,37 +77,46 @@
         }
     </style>
 </head>
+{% block navbar %}
+    {% include 'navbar.html' %}
+{% endblock %}
 <body>
     <div class="container">
         <h1>Detail Lagu</h1>
         <form id="songDetailForm">
             <label><strong> Lagu:</strong></label>
-            <p>Lagu 1</p>
+            <p>{{detail_a.0}}</p>
             <label><strong>Genre Lagu:</strong></label>
-            <p>Pop</p>
+            {% for genre in detail_e %}
+            <p>{{genre.0}}</p>
+            {% endfor %}
             <label><strong>Artist:</strong></label>
-            <p>Penyanyi 1</p>
+            <p>{{detail_b.0}}</p>
             <label><strong>Songwriter:</strong></label>
-            <p>Pencipta 1</p>
+            {% for songwriter in detail_c%}
+            <p>{{songwriter.0}}</p>
+            {% endfor %}
             <label><strong>Durasi:</strong></label>
-            <p>5:00</p>
+            <p>{{detail_a.3}}</p>
             <label><strong>Tanggal Rilis:</strong></label>
-            <p>1 Januari 2024</p>
+            <p>{{detail_a.1}}</p>
             <label><strong>Tahun:</strong></label>
-            <p>2024</p>
+            <p>{{detail_a.2}}</p>
             <label><strong>Total Play:</strong></label>
-            <p>1000</p>
+            <p>{{detail_a.4}}</p>
             <label><strong>Total Download:</strong></label>
-            <p>500</p>
+            <p>{{detail_a.5}}</p>
             <label><strong>Album:</strong></label>
-            <p>Album 1</p>
+            <p>{{detail_d.0}}</p>
             <input type="range" id="progress" name="progress" min="0" max="100" value="50">
             <div style="text-align: center;">
                 <button type="button">Play</button>
-                <a href="{% url 'kelola_playlist:add_song_to_user_playlist' %}", style="text-decoration: none">
+                <a href="{% url 'kelola_playlist:add_song_to_user_playlist' id_song=get_id.0%}", style="text-decoration: none">
                     <button type="button">Add to Playlist</button>
                 </a>
                 <button type="button" id="downloadButton">Download</button>
+
+
                 <button type="button">Kembali</button>
             </div>
         </form>
@@ -118,7 +127,7 @@
             <p>Lagu berhasil diunduh!</p>
             <div class="modal-button-container">
                 <button id="toDownloadListButton">Ke Daftar Download</button>
-                <button id="closeButton">Kembali</button>
+                <button onclick="goBack()">Kembali</button>              
             </div>
         </div>
     </div>
@@ -138,6 +147,10 @@
 
         closeButton.onclick = function() {
             modal.style.display = "none";
+        }
+
+        function goBack() {
+            window.history.back();
         }
 
         toDownloadListButton.onclick = function() {
