@@ -27,7 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     'localhost',
-    'babadu-e1.up.railway.app',
+    'https://marmut-tk3-production-3d93.up.railway.app',
     '127.0.0.1'
     ]
 
