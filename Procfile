@@ -1,1 +1,1 @@
-web: gunicorn  'Marmut_TK3.wsgi;
+web: gunicorn  Marmut_TK3.wsgi --log-file -
