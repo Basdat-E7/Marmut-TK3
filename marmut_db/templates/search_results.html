@@ -25,7 +25,15 @@
                             <td>{{ result.0 }}</td>
                             <td>{{ result.1 }}</td>
                             <td>{{ result.2 }}</td>
-                            <td><a href="{{ result.get_absolute_url }}" class="btn btn-primary">View</a></td>
+                            <td>
+                                {% if result.0 == "Song" %}
+                                    <a href="../../albumdansong/detail_lagu/{{ result.3 }}" class="btn btn-primary">View</a>
+                                {% elif result.0 == "Podcast" %}
+                                    <a href="../../biru/podcast_detail/{{ result.3 }}" class="btn btn-primary">View</a>
+                                {% elif result.0 == "Playlist" %}
+                                    <a href="../../kelola_playlist/detail_playlist/{{ result.3 }}" class="btn btn-primary">View</a>
+                                {% endif %}
+                            </td>
                         </tr>
                     {% endfor %}
                 </tbody>
