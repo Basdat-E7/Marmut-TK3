@@ -32,6 +32,7 @@
 </head>
 <body>
     <h1>List Royalti</h1>
+    <a href="{% url 'marmut_db:show_main' %}" class="btn-back">Kembali</a>
     <table>
         <thead>
             <tr>
@@ -43,27 +44,15 @@
             </tr>
         </thead>
         <tbody>
+            {% for royalti in royalties %}
             <tr>
-                <td>Song One</td>
-                <td>Album1</td>
-                <td>15000</td>
-                <td>5000</td>
-                <td>Rp 1200000</td>
+                <td>{{ royalti.0 }}</td>
+                <td>{{ royalti.1 }}</td>
+                <td>{{ royalti.2 }}</td>
+                <td>{{ royalti.3 }}</td>
+                <td>Rp {{ royalti.4 }}</td>
             </tr>
-            <tr>
-                <td>Song Two</td>
-                <td>Album2</td>
-                <td>10000</td>
-                <td>3000</td>
-                <td>Rp 800000</td>
-            </tr>
-            <tr>
-                <td>Song Three</td>
-                <td>Album1</td>
-                <td>8000</td>
-                <td>2500</td>
-                <td>Rp 650000</td>
-            </tr>
+        {% endfor %}
         </tbody>
     </table>
 </body>
