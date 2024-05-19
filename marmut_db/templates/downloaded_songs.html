@@ -23,7 +23,7 @@
                             <td>{{ song }}</td>
                             <td>{{ artist }}</td>
                             <td>
-                                <a href="#" class="btn btn-primary">Lihat</a>
+                                <a href="../../albumdansong/detail_lagu/{{ song_id }}" class="btn btn-primary">Lihat</a>
                                 <form method="post" style="display: inline;">
                                     {% csrf_token %}
                                     <input type="hidden" name="song_id_to_delete" value="{{ song_id }}">
