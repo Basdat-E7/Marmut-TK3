@@ -7,11 +7,11 @@
             <li><a href="">Chart</a></li>
             <li><a href="">Search Bar</a></li>
             <li><a href="{% url 'kelola_playlist:show_playlists' %}">Kelola Playlist</a></li>
-            <li><a href="">Langganan Paket</a></li>
+            <li><a href="{% url 'marmut_db:langganan_paket' %}">Langganan Paket</a></li>
             {% endif %}
         
             {% if request.session.premium_status == 'Premium' %}
-            <li><a href="">Downloaded Songs</a></li>
+            <li><a href="{% url 'marmut_db:downloaded_songs' %}">Downloaded Songs</a></li>
             {% endif %}
 
             {% if 'Podcaster' in request.session.roles %}
@@ -19,15 +19,17 @@
             {% endif %}
         
             {% if 'Artist' in request.session.roles or 'Songwriter' in request.session.roles %}
-            <li><a href="">Kelola Album & Songs</a></li>
+            <li><a href="{% url 'albumdansong:list_album' %}">Kelola Album & Songs</a></li>
+
             {% endif %}
         
             {% if 'Label' in request.session.roles %}
-            <li><a href="">Kelola Album</a></li>
+            <li><a href="{% url 'albumdansong:list_album_label' %}">Kelola Album</a></li>
             {% endif %}
        
             {% if 'Artist' in request.session.roles or 'Songwriter' in request.session.roles or 'Label' in request.session.roles %}
-            <li><a href="">Cek Royalti</a></li>
+            <li><a href="{% url 'albumdansong:cek_royalti' %}">Cek Royalti</a></li>
+            
             {% endif %}
         
         <li><a href="{% url 'marmut_db:logout' %}">Logout</a></li>

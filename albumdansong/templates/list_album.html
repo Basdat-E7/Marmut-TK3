@@ -8,15 +8,39 @@
         body {
             font-family: Arial, sans-serif;
             padding: 20px;
-            background-color: white;
+            background-color: #f9f9f9;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
+        }
+        header {
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        .btn-back {
+            padding: 10px 15px;
+            background-color: #007BFF;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 5px;
+            display: inline-block;
+        }
+        .btn-back:hover {
+            background-color: #0056b3;
+        }
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            text-align: center;
         }
         table {
             width: 100%;
             border-collapse: collapse;
             background: #FFCC00;
+            margin-top: 20px;
         }
         th, td {
             border: 1px solid #dddddd;
@@ -25,6 +49,10 @@
         }
         th {
             background-color: yellow;
+            color: #333;
+        }
+        td {
+            background-color: #fff8e1;
         }
         button {
             padding: 5px 10px;
@@ -32,29 +60,49 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            color: white;
         }
         .btn-view {
             background-color: #4CAF50;
             color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 5px;
+            display: inline-block;
+            padding: 10px 15px;
         }
         .btn-add {
             background-color: #008CBA;
+            padding: 10px 15px;
             color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 5px;
+            display: inline-block;
         }
         .btn-delete {
             background-color: #f44336;
             color: white;
-        }
-        .container {
-            width: 100%;
-            max-width: 1000px; 
-            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 5px;
+            display: inline-block;
+            padding: 10px 15px;
         }
     </style>
 </head>
+{% block navbar %}
+    {% include 'navbar.html' %}
+{% endblock %}
 <body>
-    <div class="container">
+    <header>
         <h1>List Album</h1>
+    </header>
+    <main class="container">
+        <div>
+            <a href="{% url 'albumdansong:create_album' %}" class="btn-back">Create Album</a>
+            <a href="{% url 'marmut_db:show_main' %}" class="btn-back">Kembali</a>
+        </div>
         <table>
             <thead>
                 <tr>
@@ -66,41 +114,21 @@
                 </tr>
             </thead>
             <tbody>
+                {% for album in albumz %}
                 <tr>
-                    <td>Album A</td>
-                    <td>Sun Records</td>
-                    <td>10</td>
-                    <td>42 mins</td>
+                    <td>{{ album.0 }}</td>
+                    <td>{{ album.4 }}</td>
+                    <td>{{ album.1 }}</td>
+                    <td>{{ album.2 }} mins</td>
                     <td>
-                        <button class="btn-view">Lihat Daftar Lagu</button>
-                        <button class="btn-add">Tambah Lagu</button>
-                        <button class="btn-delete">Hapus</button>
+                        <a href="../../albumdansong/list_lagu/{{ album.3 }}" class="btn-view">Lihat Daftar Lagu</a>
+                        <a href="../../albumdansong/create_lagu/{{ album.3 }}" class="btn-view">Tambah Lagu</a>
+                        <a href="../../albumdansong/delete_album/{{ album.3 }}" class="btn-view">Delete</a>
                     </td>
                 </tr>
-                <tr>
-                    <td>Album B</td>
-                    <td>Moon Records</td>
-                    <td>8</td>
-                    <td>35 mins</td>
-                    <td>
-                        <button class="btn-view">Lihat Daftar Lagu</button>
-                        <button class="btn-add">Tambah Lagu</button>
-                        <button class="btn-delete">Hapus</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Album C</td>
-                    <td>Mars Music</td>
-                    <td>12</td>
-                    <td>48 mins</td>
-                    <td>
-                        <button class="btn-view">Lihat Daftar Lagu</button>
-                        <button class="btn-add">Tambah Lagu</button>
-                        <button class="btn-delete">Hapus</button>
-                    </td>
-                </tr>
+                {% endfor %}
             </tbody>
         </table>
-    </div>
+    </main>
 </body>
 </html>
