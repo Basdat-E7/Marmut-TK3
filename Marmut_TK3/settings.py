@@ -31,6 +31,9 @@ ALLOWED_HOSTS = [
     '127.0.0.1'
     ]
 
+CSRF_TRUSTED_ORIGINS = ['https://marmut-tk3-production-3d93.up.railway.app']
+CSRF_ALLOWED_ORIGINS = ['https://marmut-tk3-production-3d93.up.railway.app']
+CORS_ORIGINS_WHITELIST = ['https://marmut-tk3-production-3d93.up.railway.app']
 
 # Application definition
 
