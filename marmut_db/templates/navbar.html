@@ -4,11 +4,10 @@
         
         {% if request.session.username %}
             {% if 'Artist' in request.session.roles or 'Songwriter' in request.session.roles or 'Podcaster' in request.session.roles or 'Akun' in request.session.roles %}
-            <li><a href="">Chart</a></li>
+            <li><a href="{% url 'biru:chart_list' %}">Chart</a></li>
             <li><a href="">Search Bar</a></li>
             <li><a href="">Kelola Playlist</a></li>
             <li><a href="">Langganan Paket</a></li>
-            <li><a href="">List Podcast</a></li>
 
             {% endif %}
         
@@ -17,7 +16,7 @@
             {% endif %}
 
             {% if 'Podcaster' in request.session.roles %}
-            <li><a href="">Kelola Podcast</a></li>
+            <li><a href="{% url 'biru:create_podcast' %}">Kelola Podcast</a></li>
             {% endif %}
         
             {% if 'Artist' in request.session.roles or 'Songwriter' in request.session.roles %}

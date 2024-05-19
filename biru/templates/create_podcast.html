@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Podcast</title>
+    <title>Kelola Podcast</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -38,40 +38,149 @@
         input[type="submit"] {
             width: 100%;
             padding: 10px;
-            background-color: #ffcc00; /* Warna kuning neon */
+            background-color: #ffcc00;
             color: #fff;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            transition: background-color 0.3s ease; /* Transisi warna */
+            transition: background-color 0.3s ease;
         }
         input[type="submit"]:hover {
-            background-color: #ffcc00cc; /* Kode warna kuning neon dengan opacity */
+            background-color: #ffcc00cc;
+        }
+        .popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        .popup-content {
+            width: 80%;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .btn {
+            display: block;
+            margin-bottom: 5px;
+            padding: 5px 10px;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            transition: background-color 0.3s ease;
+        }
+        .btn-view {
+            background-color: #ffcc00;
+        }
+        .btn-view:hover {
+            background-color: #ffcc00cc;
+        }
+        .btn-delete {
+            background-color: #dc3545;
+        }
+        .btn-delete:hover {
+            background-color: #c82333;
+        }
+        .btn-add {
+            background-color: #007bff;
+        }
+        .btn-add:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
 <body>
     <div class="card">
         <h2>CREATE PODCAST</h2>
-        <form action="#" method="post">
+
+        <form action="{% url 'biru:add_podcast' %}" method="POST">
+            {% csrf_token %}
             <div class="form-group">
-                <label for="judul">Judul:</label>
-                <input type="text" id="judul" name="judul" required>
+                <label for="podcastJudul">Judul Podcast:</label>
+                <input type="text" id="podcastJudul" name="judul" required>
             </div>
             <div class="form-group">
-                <label for="genre">Genre:</label>
-                <select id="genre" name="genre[]" multiple required>
-                    <option value="Genre1">Genre1</option>
-                    <option value="Genre2">Genre2</option>
-                    <option value="Genre3">Genre3</option>
+                <label for="podcastGenre">Genre:</label>
+                <select id="podcastGenre" name="genre">
+                    <option value="Family" style="color: var(--primary-2); background-color:#292724;">Family</option>
+                    <option value="Happy" style="color: var(--primary-2); background-color:#292724;">Happy</option>
+                    <option value="Parenting" style="color: var(--primary-2); background-color:#292724;">Parenting</option>
+                    <option value="Comedy" style="color: var(--primary-2); background-color:#292724;">Comedy</option>
+                    <option value="Romance" style="color: var(--primary-2); background-color:#292724;">Romance</option>
+                    <option value="Life" style="color: var(--primary-2); background-color:#292724;">Life</option>>
                 </select>
             </div>
-            <div class="form-group">
-                <label for="durasi">Durasi:</label>
-                <input type="text" id="durasi" name="durasi" required>
+            <div class="button-container plus-jakarta-sans-bold" style="margin-top:20px; align-content: center;">
+                <button style="margin-right: 10px;" type="button" onclick="hidePopup()">Back</button>
+                <button style="margin-right: 10px;" type="submit">Submit</button>
             </div>
-            <input type="submit" value="SUBMIT">
         </form>
     </div>
+
+    <div class="popup" id="popup">
+        <div class="popup-content">
+            <h2>LIST PODCAST</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                      <th>Judul</th>
+                      <th>Jumlah Episode</th>
+                      <th>Total Durasi</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for podcast in podcasts %}
+                    <tr>
+                      <td>{{ podcast.2 }}</td>
+                      <td>{{ podcast.3 }}</td>
+                      <td>{{ podcast.4 }}</td>
+                      <td>
+                        <a href="{% url 'biru:create_episodes' podcast.0%}" class="btn btn-view">Lihat Daftar Episode</a>
+                        <a href="#" class="btn btn-add">Tambah Episode</a>
+                        <a href="#" class="btn btn-danger">Hapus</a>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('podcastForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            document.getElementById('popup').style.display = 'flex';
+        });
+
+        function hidePopup() {
+            document.getElementById('popup').style.display = 'none';
+        }
+    </script>
 </body>
 </html>
