@@ -9,15 +9,22 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #fff;
+            background-color: #f7f7f7;
         }
         .container {
             max-width: 600px;
             margin: 20px auto;
             padding: 20px;
+            background-color: rgb(230, 230, 79);
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .card {
             background-color: #fff;
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
         }
         h1 {
             text-align: center;
@@ -28,6 +35,11 @@
         label {
             display: block;
             margin-bottom: 5px;
+            font-weight: bold;
+        }
+        p {
+            margin: 5px 0 15px;
+            padding: 0;
         }
         input[type="range"] {
             width: 100%;
@@ -36,16 +48,42 @@
         }
         button {
             padding: 10px 20px;
-            margin-right: 10px;
+            margin: 5px;
             background-color: #4CAF50;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             text-align: center;
+            transition: background-color 0.3s, box-shadow 0.3s;
         }
         button:hover {
             background-color: #45a049;
+            box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+        }
+        .button-primary {
+            background-color: #007BFF;
+        }
+        .button-primary:hover {
+            background-color: #0056b3;
+        }
+        .button-secondary {
+            background-color: #6c757d;
+        }
+        .button-secondary:hover {
+            background-color: #5a6268;
+        }
+        .button-danger {
+            background-color: #dc3545;
+        }
+        .button-danger:hover {
+            background-color: #c82333;
+        }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
         }
         .modal {
             display: none;
@@ -83,85 +121,82 @@
 <body>
     <div class="container">
         <h1>Detail Lagu</h1>
-        <form id="songDetailForm">
-            <label><strong> Lagu:</strong></label>
-            <p>{{detail_a.0}}</p>
-            <label><strong>Genre Lagu:</strong></label>
-            {% for genre in detail_e %}
-            <p>{{genre.0}}</p>
-            {% endfor %}
-            <label><strong>Artist:</strong></label>
-            <p>{{detail_b.0}}</p>
-            <label><strong>Songwriter:</strong></label>
-            {% for songwriter in detail_c%}
-            <p>{{songwriter.0}}</p>
-            {% endfor %}
-            <label><strong>Durasi:</strong></label>
-            <p>{{detail_a.3}}</p>
-            <label><strong>Tanggal Rilis:</strong></label>
-            <p>{{detail_a.1}}</p>
-            <label><strong>Tahun:</strong></label>
-            <p>{{detail_a.2}}</p>
-            <label><strong>Total Play:</strong></label>
-            <p>{{detail_a.4}}</p>
-            <label><strong>Total Download:</strong></label>
-            <p>{{detail_a.5}}</p>
-            <label><strong>Album:</strong></label>
-            <p>{{detail_d.0}}</p>
-            <input type="range" id="progress" name="progress" min="0" max="100" value="50">
-            <div style="text-align: center;">
-                <button type="button">Play</button>
-                <a href="{% url 'kelola_playlist:add_song_to_user_playlist' id_song=get_id.0%}", style="text-decoration: none">
-                    <button type="button">Add to Playlist</button>
-                </a>
-                <button type="button" id="downloadButton">Download</button>
+        <div class="card">
+            <form id="songDetailForm" method="post" action="{% url 'kelola_playlist:slider_play' id_song=get_id.0 %}">
+                {% csrf_token %}
+                <label><strong>Lagu:</strong></label>
+                <p>{{detail_a.0}}</p>
+                <label><strong>Genre Lagu:</strong></label>
+                {% for genre in detail_e %}
+                <p>{{genre.0}}</p>
+                {% endfor %}
+                <label><strong>Artist:</strong></label>
+                <p>{{detail_b.0}}</p>
+                <label><strong>Songwriter:</strong></label>
+                {% for songwriter in detail_c %}
+                <p>{{songwriter.0}}</p>
+                {% endfor %}
+                <label><strong>Durasi:</strong></label>
+                <p>{{detail_a.3}}</p>
+                <label><strong>Tanggal Rilis:</strong></label>
+                <p>{{detail_a.1}}</p>
+                <label><strong>Tahun:</strong></label>
+                <p>{{detail_a.2}}</p>
+                <label><strong>Total Play:</strong></label>
+                <p>{{detail_a.4}}</p>
+                <label><strong>Total Download:</strong></label>
+                <p>{{detail_a.5}}</p>
+                <label><strong>Album:</strong></label>
+                <p>{{detail_d.0}}</p>
+                <input type="range" id="progress" name="progress" min="0" max="100" value="50">
+                <div style="text-align: center;">
+                    <button type="button" id="playButton" class="button-primary">Play</button>
+                </div>
+            </form>
+        </div>
+        <div style="text-align: center">
 
-
-                <button type="button">Kembali</button>
+            <a href="{% url 'kelola_playlist:add_song_to_user_playlist' id_song=get_id.0 %}" style="text-decoration: none">
+                <button>Add to Playlist</button>
+            </a>
+        </div>
+            <div style="text-align: center">
+                <form action="{% url 'kelola_playlist:download_song' id_song=get_id.0 %}" method="post">
+                    {% csrf_token %}
+                    {% if is_premium %}
+                    <button type="submit">Download</button>
+                    {% endif %}
+                </form>
             </div>
-        </form>
-    </div>
 
-    <div id="myModal" class="modal">
-        <div class="modal-content">
-            <p>Lagu berhasil diunduh!</p>
-            <div class="modal-button-container">
-                <button id="toDownloadListButton">Ke Daftar Download</button>
-                <button onclick="goBack()">Kembali</button>              
+        <div style="text-align: center">
+            <a href="{% url 'kelola_playlist:show_playlists' %}">
+                <button>Kembali</button>
+            </a>
+        </div>
+        
+        {% if messages %}
+        <div id="errorModal" class="modal">
+            <div class="modal-content">
+                {% for message in messages %}
+                <p>{{ message }}</p>
+                {% endfor %}
+                <div class="modal-button-container">
+                    <button class="button-secondary">OK</button>
+                </div>
+            </div>
+        </div>
+        {%endif%}
+        
+        <div id="myModal" class="modal">
+            <div class="modal-content">
+                <p>Lagu berhasil diunduh!</p>
+                <div class="modal-button-container">
+                    <button id="toDownloadListButton" class="button-primary">Ke Daftar Download</button>
+                    <button class="button-secondary">Kembali</button>              
+                </div>
             </div>
         </div>
     </div>
-
-    <script>
-        var modal = document.getElementById("myModal");
-
-        var downloadButton = document.getElementById("downloadButton");
-
-        var closeButton = document.getElementById("closeButton");
-
-        var toDownloadListButton = document.getElementById("toDownloadListButton");
-
-        downloadButton.onclick = function() {
-            modal.style.display = "block";
-        }
-
-        closeButton.onclick = function() {
-            modal.style.display = "none";
-        }
-
-        function goBack() {
-            window.history.back();
-        }
-
-        toDownloadListButton.onclick = function() {
-            window.location.replace("download_list.html");
-        }
-
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
-        }
-    </script>
 </body>
 </html>

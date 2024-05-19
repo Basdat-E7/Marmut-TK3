@@ -9,13 +9,13 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: rgb(230, 230, 79); 
+            background-color: #fff; 
         }
         .container {
             max-width: 600px;
             margin: 20px auto;
             padding: 20px;
-            background-color: #fff;
+            background-color: rgb(230, 230, 79);
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
@@ -57,6 +57,9 @@
         }
     </style>
 </head>
+{% block navbar %}
+    {% include 'navbar.html' %}
+{% endblock %}
 <body>
     <div class="container">
         <h1>Tambah Lagu ke Playlist</h1>
