@@ -44,9 +44,26 @@
         button:hover {
             background-color: rgba(255, 255, 0, 0.591);
         }
+        .navbar {
+            background-color: yellow;
+            padding: 10px 20px;
+            width: 100%;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-around;
+        }
+        .navbar a {
+            color: black;
+            text-decoration: none;
+            padding: 10px 15px;
+            transition: background-color 0.3s ease;
+        }
     </style>
 </head>
 <body>
+    <div class="navbar">
+        {% include 'navbar.html' %}
+    </div>
     <form action="/create_lagu_artist" method="post">
         <h1>Create Lagu</h1>
         <h4>Artist: Lala</h4>

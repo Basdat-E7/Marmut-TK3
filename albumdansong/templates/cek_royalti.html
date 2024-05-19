@@ -28,9 +28,26 @@
         th {
             background-color: yellow;
         }
+        .navbar {
+            background-color: yellow;
+            padding: 10px 20px;
+            width: 100%;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-around;
+        }
+        .navbar a {
+            color: black;
+            text-decoration: none;
+            padding: 10px 15px;
+            transition: background-color 0.3s ease;
+        }
     </style>
 </head>
 <body>
+    <div class="navbar">
+        {% include 'navbar.html' %}
+    </div>
     <h1>List Royalti</h1>
     <a href="{% url 'marmut_db:show_main' %}" class="btn-back">Kembali</a>
     <table>

@@ -10,16 +10,43 @@
             background-color: #FFCC00; 
             color: #333; 
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
-            height: 100vh;
             margin: 0;
+            padding: 0;
+        }
+        .navbar {
+            background-color: yellow;
+            padding: 10px 20px;
+            width: 100%;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-around;
+        }
+        .navbar a {
+            color: black;
+            text-decoration: none;
+            padding: 10px 15px;
+            transition: background-color 0.3s ease;
+        }
+        .navbar a:hover {
+            background-color: #ddd;
+        }
+        .container {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
         }
         form {
             padding: 3rem;
             border-radius: 20px;
+            background-color: white;
             width: 100%;
             max-width: 400px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
         div {
             margin-bottom: 20px; 
@@ -53,85 +80,81 @@
         .btn-cancel:hover {
             background-color: darkred;
         }
+        h1 {
+            text-align: center;
+        }
     </style>
 </head>
-{% block navbar %}
-    {% include 'navbar.html' %}
-{% endblock %}
 <body>
-    <form method="post" action="{% url 'albumdansong:create_album' %}">
-         <h1 style="text-align: center;">Create Album</h1>
-         <a href="{% url 'albumdansong:list_album' %}" class="btn-back">Kembali</a>
-        {% csrf_token %}
-        {% csrf_token %}
-         <div>
-            <label for="judul_album">Judul Album:</label>
-            <input type="text" id="judul_album" name="judul_album" required>
-        </div>
-        <div>
-            <label for="label">Label:</label>
-            <select class="form-select" name="id_label" aria-label="Default select example">
-                <option selected disabled hidden>Choose label</option>
-                {% for label in results %}
-                <option value="{{ label.1 }}">{{ label.0 }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <div>
-            <label for="judul_lagu">Judul Lagu:</label>
-            <input type="text" id="durasi" name="judul_lagu"><br><br>
-        </div>
-      
-        <div>
-            <label for="artist">Nama Artis:</label>
-            {% if nama_artis_login != None %}
-                <input type="text" value="{{ nama_artis_login.0 }}" readonly>
-                <input type="hidden" name="artist" value="{{ nama_artis_login.1 }}">
-            {% else %}
-                <select class="form-select" id="select-artist" name="artist" aria-label="Default select example">
-                    {% for artist in artists %}
-                        <option value="{{ artist.1 }}">{{ artist.0 }}</option>
+    <div class="navbar">
+        {% include 'navbar.html' %}
+    </div>
+    <div class="container">
+        <form method="post" action="{% url 'albumdansong:create_album' %}">
+            <h1>Create Album</h1>
+            <a href="{% url 'albumdansong:list_album' %}" class="btn-back">Kembali</a>
+            {% csrf_token %}
+            <div>
+                <label for="judul_album">Judul Album:</label>
+                <input type="text" id="judul_album" name="judul_album" required>
+            </div>
+            <div>
+                <label for="label">Label:</label>
+                <select class="form-select" name="id_label" aria-label="Default select example">
+                    <option selected disabled hidden>Choose label</option>
+                    {% for label in results %}
+                    <option value="{{ label.1 }}">{{ label.0 }}</option>
                     {% endfor %}
                 </select>
-            {% endif %}
-                
-            
-        </div>
-        <div>
-            <label for="nama_songwriter">Nama Songwriter:</label>
-            <select multiple class="form-select" id="select-sw" name="songwriter" aria-label="Multiple select example">
-                {% for songwriter in songwriters %}
+            </div>
+            <div>
+                <label for="judul_lagu">Judul Lagu:</label>
+                <input type="text" id="judul_lagu" name="judul_lagu"><br><br>
+            </div>
+            <div>
+                <label for="artist">Nama Artis:</label>
+                {% if nama_artis_login != None %}
+                    <input type="text" value="{{ nama_artis_login.0 }}" readonly>
+                    <input type="hidden" name="artist" value="{{ nama_artis_login.1 }}">
+                {% else %}
+                    <select class="form-select" id="select-artist" name="artist" aria-label="Default select example">
+                        {% for artist in artists %}
+                        <option value="{{ artist.1 }}">{{ artist.0 }}</option>
+                        {% endfor %}
+                    </select>
+                {% endif %}
+            </div>
+            <div>
+                <label for="nama_songwriter">Nama Songwriter:</label>
+                <select multiple class="form-select" id="select-sw" name="songwriter" aria-label="Multiple select example">
+                    {% for songwriter in songwriters %}
                     {% if nama_songwriter_login != None %}
                         {% if nama_songwriter_login.0 == songwriter.0 %}
-                            <option value="{{ nama_songwriter_login.1 }}" selected hidden>{{ nama_songwriter_login.0 }}</option>
+                        <option value="{{ nama_songwriter_login.1 }}" selected hidden>{{ nama_songwriter_login.0 }}</option>
                         {% else %}
-                            <option value="{{ songwriter.1 }}">{{ songwriter.0 }}</option>
+                        <option value="{{ songwriter.1 }}">{{ songwriter.0 }}</option>
                         {% endif %}
                     {% else %}
                         <option value="{{ songwriter.1 }}">{{ songwriter.0 }}</option>
                     {% endif %}      
-                {% endfor %}
-            </select>
-            
-        </div>
-        
-        <div>
-            <label for="genre">Genre:</label>
-            <select multiple class="form-select" id="select-genre" name="genre" aria-label="Multiple select example">
-                {% for genre in genres %}
-                <option value="{{ genre.0 }}">{{ genre.0 }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        
-        <div>
-            <label for="durasi">Durasi:</label>
-            <input type="text" id="durasi" name="durasi"><br><br>
-        </div>
-        
-        <button href="{% url 'albumdansong:list_album' %}" class="btn-cancel" >Cancel</button><br>
-        <br>
-        <button type="submit">Submit</button>
-    </form>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label for="genre">Genre:</label>
+                <select multiple class="form-select" id="select-genre" name="genre" aria-label="Multiple select example">
+                    {% for genre in genres %}
+                    <option value="{{ genre.0 }}">{{ genre.0 }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label for="durasi">Durasi:</label>
+                <input type="text" id="durasi" name="durasi"><br><br>
+            </div>
+            <button href="{% url 'albumdansong:list_album' %}" class="btn-cancel" >Cancel</button><br><br>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
 </body>
 </html>

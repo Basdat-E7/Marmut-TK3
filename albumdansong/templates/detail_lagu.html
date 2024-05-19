@@ -75,12 +75,26 @@
         .modal-button-container button {
             margin-right: 10px;
         }
+        .navbar {
+            background-color: yellow;
+            padding: 10px 20px;
+            width: 100%;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-around;
+        }
+        .navbar a {
+            color: black;
+            text-decoration: none;
+            padding: 10px 15px;
+            transition: background-color 0.3s ease;
+        }
     </style>
 </head>
-{% block navbar %}
-    {% include 'navbar.html' %}
-{% endblock %}
 <body>
+    <div class="navbar">
+        {% include 'navbar.html' %}
+    </div>
     <div class="container">
         <h1>Detail Lagu</h1>
         <form id="songDetailForm">

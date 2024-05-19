@@ -419,7 +419,7 @@ def detail_lagu (request, id_lagu):
         'get_id':id_get
     }
 
-    return render(request, "detail_song.html", context)
+    return render(request, "detail_lagu.html", context)
 
 def cek_royalti(request):
     email = request.session['email']
