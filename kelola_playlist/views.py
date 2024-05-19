@@ -550,12 +550,14 @@ def download_song(request, id_song):
                             VALUES (%s, %s)"""
             curr.execute(downloader, (id_song, email,))
             connection.commit()
+            messages.success(request, 'Berhasil mengunduh lagu.')
+
             return HttpResponseRedirect(reverse('kelola_playlist:detail_song', args=(id_song,)))
         
     except Exception as e:
         connection.rollback()
 
-        messages.error(request, f"{str(e)}")
+        messages.error(request, 'Gagal mengunduh lagu: ' + str(e))
 
         return HttpResponseRedirect(reverse('kelola_playlist:detail_song', args=(id_song,)))
 
