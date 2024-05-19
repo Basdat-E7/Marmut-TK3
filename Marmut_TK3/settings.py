@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'kelola_playlist',
     'marmut_db',
+    'biru',
     'albumdansong'
 ]
 
