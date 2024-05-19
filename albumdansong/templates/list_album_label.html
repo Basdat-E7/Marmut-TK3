@@ -45,8 +45,12 @@
         }
     </style>
 </head>
+{% block navbar %}
+    {% include 'navbar.html' %}
+{% endblock %}
 <body>
     <h1>List Album</h1>
+    <a href="{% url 'marmut_db:show_main' %}" class="btn-back">Kembali</a>
     <table>
         <thead>
             <tr>
@@ -57,34 +61,25 @@
             </tr>
         </thead>
         <tbody>
+            {% for album in albums %}
             <tr>
-                <td>Summer Nights</td>
-                <td>12</td>
-                <td>42 mins</td>
+                <td>{{ album.0 }}</td>
+                <td>{{ album.1 }}</td>
+                <td>{{ album.2 }} mins</td>
                 <td>
-                    <button class="btn-view" onclick="location.href='view_album.html'">Lihat Daftar Lagu</button>
-                    <button class="btn-delete">Hapus</button>
+                    <a href= "../../albumdansong/list_lagu_label/{{ album.3 }}" button class=btn btn-primary>Lihat Daftar Lagu</a>
+                    <a href="../../albumdansong/delete_album_label/{{ album.3 }}" button class="btn-delete" onclick="deleteAlbum(`{{album.3}}`)">Hapus</a>
                 </td>
             </tr>
-            <tr>
-                <td>Winter Dreams</td>
-                <td>10</td>
-                <td>38 mins</td>
-                <td>
-                    <button class="btn-view" onclick="location.href='view_album.html'">Lihat Daftar Lagu</button>
-                    <button class="btn-delete">Hapus</button>
-                </td>
-            </tr>
-            <tr>
-                <td>Autumn Leaves</td>
-                <td>8</td>
-                <td>31 mins</td>
-                <td>
-                    <button class="btn-view" onclick="location.href='view_album.html'">Lihat Daftar Lagu</button>
-                    <button class="btn-delete">Hapus</button>
-                </td>
-            </tr>
+            {% endfor %}
         </tbody>
     </table>
+
+    <script>
+        function deleteAlbum(id){
+            let url = "{% url 'albumdansong:delete_album_label' '123'%}".replace('123', id);
+            fetch (url, {method: "DELETE"});
+        }
+    </script>
 </body>
 </html>

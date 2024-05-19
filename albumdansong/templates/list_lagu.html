@@ -50,16 +50,12 @@
         }
     </style>
 </head>
+{% block navbar %}
+    {% include 'navbar.html' %}
+{% endblock %}
 <body>
     <h1>Daftar Lagu</h1>
-    <form>
-        <label for="album-select">Pilih Album:</label>
-        <select id="album-select" onchange="updateAlbumSelection()">
-            <option value="album1">Album1</option>
-            <option value="album2">Album2</option>
-            <option value="album3">Album3</option>
-        </select>
-    </form>
+    <a href="{% url 'albumdansong:list_album' %}" class="btn-back">Kembali</a>
     <table>
         <thead>
             <tr>
@@ -71,45 +67,19 @@
             </tr>
         </thead>
         <tbody>
+            {% for song in songs %}
             <tr>
-                <td>Song One</td>
-                <td>3:45</td>
-                <td>1,200 plays</td>
-                <td>800 downloads</td>
+                <td>{{ song.0 }}</td>
+                <td>{{ song.1 }} </td>
+                <td>{{ song.4 }}</td>
+                <td>{{ song.5 }}</td>
                 <td>
-                    <button class="btn-detail" onclick="location.href='detail_lagu.html'">Lihat Detail</button>
-                    <button class="btn-delete">Hapus</button>
+                    <a href= "../../albumdansong/detail_lagu/{{ song.2 }}" button class=btn btn-primary>Lihat Detail Lagu</a>
+                    <a href= "../../albumdansong/delete_lagu/{{ song.3 }}/{{ song.2 }}" button class=btn btn-primary>Delete</a>
                 </td>
             </tr>
-            <tr>
-                <td>Song Two</td>
-                <td>4:20</td>
-                <td>1,500 plays</td>
-                <td>1,100 downloads</td>
-                <td>
-                    <button class="btn-detail" onclick="location.href='detail_lagu.html'">Lihat Detail</button>
-                    <button class="btn-delete">Hapus</button>
-                </td>
-            </tr>
-            <tr>
-                <td>Song Three</td>
-                <td>5:00</td>
-                <td>500 plays</td>
-                <td>300 downloads</td>
-                <td>
-                    <button class="btn-detail" onclick="location.href='detail_lagu.html'">Lihat Detail</button>
-                    <button class="btn-delete">Hapus</button>
-                </td>
-            </tr>
+                {% endfor %}
         </tbody>
     </table>
-    <script>
-        function updateAlbumSelection() {
-            var albumId = document.getElementById('album-select').value;
-            // Place logic here to load songs from the selected album
-            // This might involve redirecting to another page or making an AJAX call
-            console.log("Selected album:", albumId);
-        }
-    </script>
 </body>
 </html>

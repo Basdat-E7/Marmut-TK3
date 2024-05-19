@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Lagu pada Album</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+        }
+        table {
+            width: 80%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: #FFCC00;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            text-align: left;
+            padding: 8px;
+        }
+        th {
+            background-color: yellow;
+        }
+        button {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+        .btn-detail {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .btn-delete {
+            background-color: #f44336;
+            color: white;
+        }
+        select {
+            padding: 8px;
+            margin-bottom: 20px;
+            width: 200px;  /* Adjust width as needed */
+        }
+    </style>
+</head>
+{% block navbar %}
+    {% include 'navbar.html' %}
+{% endblock %}
+<body>
+    <h1>Daftar Lagu</h1>
+    <a href="{% url 'albumdansong:list_album_label' %}" class="btn-back">Kembali</a>
+    <table>
+        <thead>
+            <tr>
+                <th>Judul</th>
+                <th>Durasi</th>
+                <th>Total Play</th>
+                <th>Total Download</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for song in songs %}
+            <tr>
+                <td>{{ song.0 }}</td>
+                <td>{{ song.1 }} </td>
+                <td>{{ song.4 }}</td>
+                <td>{{ song.5 }}</td>
+                <td>
+                    <a href= "../../albumdansong/detail_lagu/{{ song.2 }}" button class=btn btn-primary>Lihat Detail Lagu</a>
+                    <a href= "../../albumdansong/delete_lagu_label/{{ song.3 }}/{{ song.2 }}" button class=btn btn-primary>Delete</a>
+                </td>
+            </tr>
+                {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

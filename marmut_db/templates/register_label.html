@@ -15,7 +15,18 @@
                     <div class="card-body">
                         <form method="post">
                             {% csrf_token %}
-                            {{ form.as_p }}
+                            <label for="email" class="form-label">Email:</label>
+                            <input type="email" id="email" name="email" required class="form-control"><br>
+                
+                            <label for="password" class="form-label">Password:</label>
+                            <input type="password" id="password" name="password" required class="form-control"><br>
+                
+                            <label for="nama" class="form-label">Nama:</label>
+                            <input type="text" id="nama" name="nama" required class="form-control"><br>
+
+                            <label for="kontak" class="form-label">Kontak:</label>
+                            <input type="text" id="kontak" name="kontak" required class="form-control"><br>
+                            
                             <button type="submit" class="btn btn-primary">Submit</button>
                         </form>
                     </div>
