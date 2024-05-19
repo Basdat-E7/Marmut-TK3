@@ -4,7 +4,7 @@
         
         {% if request.session.username %}
             {% if 'Artist' in request.session.roles or 'Songwriter' in request.session.roles or 'Podcaster' in request.session.roles or 'Akun' in request.session.roles %}
-            <li><a href="{% url 'biru:get_chart_details' %}">Chart</a></li>
+            <li><a href="{% url 'biru:get_chart_details' %}{% url 'biru:chart_list' %}">Chart</a></li>
 
             <li><a href="{% url 'kelola_playlist:show_playlists' %}">Kelola Playlist</a></li>
             <li><a href="{% url 'marmut_db:langganan_paket' %}">Langganan Paket</a></li>
@@ -16,7 +16,7 @@
             {% endif %}
 
             {% if 'Podcaster' in request.session.roles %}
-            <li><a href="">Kelola Podcast</a></li>
+            <li><a href="{% url 'biru:create_podcast' %}">Kelola Podcast</a></li>
             {% endif %}
         
             {% if 'Artist' in request.session.roles or 'Songwriter' in request.session.roles %}
