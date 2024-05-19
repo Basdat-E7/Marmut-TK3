@@ -25,10 +25,6 @@ def get_db_connection():
 
 # Create your views here.
 def show_main(request):
-    curr.execute("SELECT * FROM marmut.premium WHERE email = %s", (request.session.get('email'),))
-    premium_status = curr.fetchone()
-
-    request.session['premium_status'] = 'Premium' if premium_status is not None else 'Free'
     return render(request, "dashboard.html")
 
 def login(request):
@@ -419,7 +415,7 @@ def search(request):
     results = []
     if query:
         curr.execute("""
-            SELECT 'Song' AS type, k.judul, a.nama AS by
+            SELECT 'Song' AS type, k.judul, a.nama AS by, k.id AS id
             FROM marmut.SONG s
             JOIN marmut.KONTEN k ON s.id_konten = k.id
             JOIN marmut.ARTIST ar ON s.id_artist = ar.id
@@ -430,7 +426,7 @@ def search(request):
 
         # Search in PODCAST table
         curr.execute("""
-            SELECT 'Podcast' AS type, k.judul, a.nama AS by
+            SELECT 'Podcast' AS type, k.judul, a.nama AS by, k.id AS id
             FROM marmut.PODCAST p
             JOIN marmut.KONTEN k ON p.id_konten = k.id
             JOIN marmut.PODCASTER pod ON p.email_podcaster = pod.email
@@ -441,9 +437,10 @@ def search(request):
         
         # Search in USER_PLAYLIST table
         curr.execute("""
-            SELECT 'Playlist' AS type, up.judul, a.nama AS by
+            SELECT 'Playlist' AS type, up.judul, a.nama AS by, pl.id AS id
             FROM marmut.USER_PLAYLIST up
             JOIN marmut.AKUN a ON up.email_pembuat = a.email
+            JOIN marmut.PLAYLIST pl ON up.id_playlist = pl.id
             WHERE up.judul ILIKE %s OR a.nama ILIKE %s;
         """, [f'%{query}%', f'%{query}%'])
         playlists = curr.fetchall()

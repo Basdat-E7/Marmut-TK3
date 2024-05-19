@@ -27,6 +27,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
+CSRF_TRUSTED_ORIGINS = ['https://marmut-tk3-production-3d93.up.railway.app']
+CSRF_ALLOWED_ORIGINS = ['https://marmut-tk3-production-3d93.up.railway.app']
+CORS_ORIGINS_WHITELIST = ['https://marmut-tk3-production-3d93.up.railway.app']
 
 # Application definition
 
@@ -136,3 +139,7 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]

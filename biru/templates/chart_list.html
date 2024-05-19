@@ -86,7 +86,7 @@
                 {% endfor %}
             </tbody>
         </table>
-        <a href="#" class="btn-back">Kembali</a>
+        <a href="{% url 'marmut_db:show_main' %}" class="btn-back">Kembali</a>
     </div>
 
     {% for chart_type, songs in chart_details.items %}
