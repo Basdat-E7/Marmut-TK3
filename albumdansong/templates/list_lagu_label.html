@@ -55,7 +55,7 @@
 {% endblock %}
 <body>
     <h1>Daftar Lagu</h1>
-    <a href="{% url 'albumdansong:list_album' %}" class="btn-back">Kembali</a>
+    <a href="{% url 'albumdansong:list_album_label' %}" class="btn-back">Kembali</a>
     <table>
         <thead>
             <tr>
@@ -75,7 +75,7 @@
                 <td>{{ song.5 }}</td>
                 <td>
                     <a href= "../../albumdansong/detail_lagu/{{ song.2 }}" button class=btn btn-primary>Lihat Detail Lagu</a>
-                    <a href= "../../albumdansong/delete_lagu/{{ song.3 }}/{{ song.2 }}" button class=btn btn-primary>Delete</a>
+                    <a href= "../../albumdansong/delete_lagu_label/{{ song.3 }}/{{ song.2 }}" button class=btn btn-primary>Delete</a>
                 </td>
             </tr>
                 {% endfor %}
