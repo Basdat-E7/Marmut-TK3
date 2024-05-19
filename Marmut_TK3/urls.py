@@ -22,6 +22,5 @@ urlpatterns = [
     path('kelola_playlist/', include('kelola_playlist.urls')),
     path('', include('marmut_db.urls')),
     path('biru/', include('biru.urls')),
-    path('', include('biru.urls')),
-
+    path('albumdansong/', include('albumdansong.urls')),
 ]

@@ -18,20 +18,22 @@
             </thead>
             <tbody>
                 <tr>
-                    <td>1 Bulan</td>
-                    <td>Rp49.900</td>
+                    <td>{{ jenis }}</td>
+                    <td>{{ harga }}</td>
                 </tr>
             </tbody>
         </table>
-        <form>
+        <form method="post" action="{% url 'marmut_db:langganan_paket_confirm' %}">
+            {% csrf_token %}
             <div class="form-group">
                 <label for="paymentMethod">Metode Pembayaran:</label>
-                <select class="form-control" id="paymentMethod">
-                    <option>Transfer Bank</option>
-                    <option>Kartu Kredit</option>
-                    <option>E-Wallet</option>
+                <select class="form-control" id="paymentMethod" name="paymentMethod">
+                    <option value="Transfer Bank">Transfer Bank</option>
+                    <option value="Kartu Kredit">Kartu Kredit</option>
+                    <option value="E-Wallet">E-Wallet</option>
                 </select>
             </div>
+            <input type="hidden" name="jenis" value="{{ jenis }}">
             <button type="submit" class="btn btn-primary">SUBMIT</button>
         </form>
     </div>

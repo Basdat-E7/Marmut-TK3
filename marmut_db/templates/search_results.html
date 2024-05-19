@@ -22,9 +22,9 @@
                 <tbody>
                     {% for result in results %}
                         <tr>
-                            <td>{{ result.get_type_display }}</td>
-                            <td>{{ result.title }}</td>
-                            <td>{{ result.get_by_display }}</td>
+                            <td>{{ result.0 }}</td>
+                            <td>{{ result.1 }}</td>
+                            <td>{{ result.2 }}</td>
                             <td><a href="{{ result.get_absolute_url }}" class="btn btn-primary">View</a></td>
                         </tr>
                     {% endfor %}
