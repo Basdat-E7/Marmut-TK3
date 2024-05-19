@@ -8,8 +8,8 @@ from itertools import chain
 from django.contrib import messages
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth.decorators import login_required
+from datetime import datetime, timedelta
 from datetime import datetime
-
 from utils.query import *
 import uuid
 
@@ -25,7 +25,10 @@ def get_db_connection():
 
 # Create your views here.
 def show_main(request):
-    
+    curr.execute("SELECT * FROM marmut.premium WHERE email = %s", (request.session.get('email'),))
+    premium_status = curr.fetchone()
+
+    request.session['premium_status'] = 'Premium' if premium_status is not None else 'Free'
     return render(request, "dashboard.html")
 
 def login(request):
@@ -54,6 +57,7 @@ def login(request):
                 birthdate_string = user[5].strftime("%d-%m-%Y")
                 request.session['birthdate'] = birthdate_string
                 request.session['city'] = user[7]
+                get_user_playlist_titles(request, username)
                 if user[3] == 0:
                     request.session['gender'] = "Perempuan"
                 else:
@@ -117,14 +121,15 @@ def authenticate_akun(username, password):
             # Cek status premium
             cur.execute("SELECT * FROM marmut.premium WHERE email = %s", (username,))
             premium_status = cur.fetchone()
-
+            # print(premium_status)
+            
             # Cek apakah pengguna memiliki langganan premium yang berakhir
             if premium_status:
                 premium_id = premium_status[0]
                 # Periksa apakah langganan premium telah berakhir
                 cur.execute("SELECT * FROM marmut.transaction WHERE email = %s AND timestamp_berakhir < CURRENT_DATE", (username,))
                 expired_premium = cur.fetchone()
-                print(expired_premium)
+                # print(expired_premium)
                 if expired_premium:
                     # Jika langganan premium telah berakhir, hapus dari tabel premium
                     cur.execute("DELETE FROM marmut.downloaded_song WHERE email_downloader = %s", (premium_id,))
@@ -178,10 +183,9 @@ def get_songs_by_artist(username):
         WHERE song.id_artist = %s
     """, (artist_id,))
     songs = [row[0] for row in curr.fetchall()]
-    print(songs)
+    # print(songs)
     return songs
         
-
 def get_songs_by_songwriter(username):
     curr.execute("SELECT id FROM marmut.songwriter WHERE email_akun = %s", (username,))
     songwriter_id = curr.fetchone()[0]
@@ -199,7 +203,7 @@ def get_songs_by_songwriter(username):
         """, (song_id,))
         song_title = curr.fetchone()[0]
         song_titles.append(song_title)
-        print(song_titles)
+        # print(song_titles)
     return song_titles
 
 def get_podcasts_by_podcaster(username):
@@ -220,6 +224,20 @@ def get_podcasts_by_podcaster(username):
 
     return podcast_titles
 
+def get_user_playlist_titles(request, username):
+    curr.execute("""
+        SELECT judul
+        FROM marmut.user_playlist
+        WHERE email_pembuat = %s
+    """, [username])
+    playlists = curr.fetchall()
+
+    # Extract titles
+    playlist_titles = [playlist[0] for playlist in playlists]
+    print(playlist_titles)
+    # Store the playlist titles in session
+    request.session['playlists'] = playlist_titles
+    
 def register(request):
     return render(request, "register.html")
 
@@ -350,21 +368,135 @@ def langganan_paket_page(request):
     return render(request, "langganan_paket.html")
 
 def langganan_paket_submit(request):
-    return render(request, "langganan_paket_submit.html")
+    jenis_paket = request.GET.get('jenis', '')
+    # Data paket sesuai dengan jenis
+    if jenis_paket == '1 bulan':
+        harga = 'Rp49.900'
+    elif jenis_paket == '3 bulan':
+        harga = 'Rp39.900'
+    elif jenis_paket == '6 bulan':
+        harga = 'Rp29.900'
+    else:
+        jenis_paket = '12 bulan'
+        harga = 'Rp24.900'
+    return render(request, "langganan_paket_submit.html", {'jenis': jenis_paket, 'harga': harga})
 
 def purchase_history(request):
     return render(request, "purchase_history.html")
 
 def downloaded_songs(request):
-    return render(request, "downloaded_songs.html")
+    email = request.session.get('email')
+    print(email)
+    if request.method == 'POST':
+        song_id_to_delete = request.POST.get('song_id_to_delete')
+        print(song_id_to_delete)
+        curr.execute("""
+            DELETE FROM marmut.downloaded_song
+            WHERE id_song = %s AND email_downloader = %s
+        """, [song_id_to_delete, email])
+        connection.commit()
+
+    # Query to get downloaded songs and their artists
+    curr.execute("""
+        SELECT k.judul, ak.nama, s.id_konten
+        FROM marmut.downloaded_song ds
+        JOIN marmut.song s ON ds.id_song = s.id_konten
+        JOIN marmut.artist a ON s.id_artist = a.id
+        JOIN marmut.konten k ON s.id_konten = k.id
+        JOIN marmut.akun ak ON ak.email = a.email_akun
+        WHERE ds.email_downloader = %s
+    """, [email])
+    
+    downloaded_songs = curr.fetchall()
+    print(downloaded_songs)
+        
+    # Pass the data to the template
+    return render(request, 'downloaded_songs.html', {'downloaded_songs': downloaded_songs})
 
 def search(request):
     query = request.GET.get('q')
+    print(query)
+    results = []
     if query:
-        songs = Song.objects.filter(Q(title__icontains=query) | Q(artist__name__icontains=query))
-        podcasts = Podcast.objects.filter(Q(title__icontains=query) | Q(podcaster__name__icontains=query))
-        playlists = UserPlaylist.objects.filter(Q(name__icontains=query) | Q(creator__name__icontains=query))
+        curr.execute("""
+            SELECT 'Song' AS type, k.judul, a.nama AS by
+            FROM marmut.SONG s
+            JOIN marmut.KONTEN k ON s.id_konten = k.id
+            JOIN marmut.ARTIST ar ON s.id_artist = ar.id
+            JOIN marmut.AKUN a ON ar.email_akun = a.email
+            WHERE k.judul ILIKE %s OR a.nama ILIKE %s;
+        """, [f'%{query}%', f'%{query}%'])
+        songs = curr.fetchall()
+
+        # Search in PODCAST table
+        curr.execute("""
+            SELECT 'Podcast' AS type, k.judul, a.nama AS by
+            FROM marmut.PODCAST p
+            JOIN marmut.KONTEN k ON p.id_konten = k.id
+            JOIN marmut.PODCASTER pod ON p.email_podcaster = pod.email
+            JOIN marmut.AKUN a ON pod.email = a.email
+            WHERE k.judul ILIKE %s OR a.nama ILIKE %s;
+        """, [f'%{query}%', f'%{query}%'])
+        podcasts = curr.fetchall()
+        
+        # Search in USER_PLAYLIST table
+        curr.execute("""
+            SELECT 'Playlist' AS type, up.judul, a.nama AS by
+            FROM marmut.USER_PLAYLIST up
+            JOIN marmut.AKUN a ON up.email_pembuat = a.email
+            WHERE up.judul ILIKE %s OR a.nama ILIKE %s;
+        """, [f'%{query}%', f'%{query}%'])
+        playlists = curr.fetchall()
+
+        # Combine all results
         results = list(chain(songs, podcasts, playlists))
     else:
         results = None
+    print(results)
     return render(request, 'search_results.html', {'results': results})
+
+def langganan_paket(request):
+    if request.method == 'POST':
+        # Ambil data yang dipilih dari form
+        jenis_paket = request.POST.get('jenis')
+        metode_pembayaran = request.POST.get('paymentMethod')
+        print(jenis_paket )
+        print(metode_pembayaran)
+
+        # Cek apakah pengguna memiliki langganan premium yang aktif
+        is_premium = request.session.get('premium_status', False)
+        if is_premium != 'Free':
+            error_message = "Maaf, Anda sudah memiliki langganan premium yang aktif."
+            return render(request, 'error.html', {'error_message': error_message})
+
+        # Tentukan harga paket berdasarkan jenis paket yang dipilih
+        if jenis_paket == '1 bulan':
+            harga = 50000
+            tambahan_hari = 30
+        elif jenis_paket == '3 bulan':
+            harga = 40000
+            tambahan_hari = 90
+        elif jenis_paket == '6 bulan':
+            harga = 30000
+            tambahan_hari = 180
+        elif jenis_paket == '12 bulan':
+            harga = 25000
+            tambahan_hari = 365
+        print(tambahan_hari)
+        # Hitung tanggal mulai dan tanggal berakhir
+        tanggal_mulai = datetime.now().date()
+        print(tanggal_mulai)
+        tanggal_berakhir = tanggal_mulai + timedelta(days=tambahan_hari)
+
+        # Buat id transaksi menggunakan UUID
+        id_transaksi = uuid.uuid4()
+        
+        curr.execute("INSERT INTO marmut.premium (email) VALUES (%s)", (request.session.get('email'),))
+
+        curr.execute("""
+        INSERT INTO marmut.transaction (id, jenis_paket, email, timestamp_dimulai, timestamp_berakhir, metode_bayar, nominal)
+        VALUES (%s, %s, %s, %s, %s, %s, %s)
+        """, (id_transaksi, jenis_paket, request.session.get('email'), tanggal_mulai, tanggal_berakhir, metode_pembayaran, harga))
+        connection.commit()
+
+        return redirect('marmut_db:show_main')

@@ -6,12 +6,15 @@
             {% if 'Artist' in request.session.roles or 'Songwriter' in request.session.roles or 'Podcaster' in request.session.roles or 'Akun' in request.session.roles %}
             <li><a href="">Chart</a></li>
             <li><a href="">Search Bar</a></li>
-            <li><a href="">Kelola Playlist</a></li>
-            <li><a href="">Langganan Paket</a></li>
+
+            <li><a href="{% url 'kelola_playlist:show_playlists' %}">Kelola Playlist</a></li>
+            <li><a href="{% url 'marmut_db:langganan_paket' %}">Langganan Paket</a></li>
+            <li><a href="">List Podcast</a></li>
+
             {% endif %}
         
             {% if request.session.premium_status == 'Premium' %}
-            <li><a href="">Downloaded Songs</a></li>
+            <li><a href="{% url 'marmut_db:downloaded_songs' %}">Downloaded Songs</a></li>
             {% endif %}
 
             {% if 'Podcaster' in request.session.roles %}
